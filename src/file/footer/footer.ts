@@ -1,5 +1,5 @@
 // http://officeopenxml.com/WPfooters.php
-import { InitializableXmlComponent, XmlComponent } from "file/xml-components";
+import { InitializableXmlComponent, IXmlableObject, XmlComponent } from "file/xml-components";
 import { Paragraph } from "../paragraph";
 import { Table } from "../table";
 import { FooterAttributes } from "./footer-attributes";
@@ -59,5 +59,14 @@ export class Footer extends InitializableXmlComponent {
         });
         this.addTable(table);
         return table;
+    }
+
+    public prepForXml(): IXmlableObject | undefined {
+        // Word Online requires that all Footers have content, so if we only
+        // have our attributes, add an empty paragraph to satisfy it.
+        if (!this.root.filter((e) => !(e instanceof FooterAttributes)).length) {
+            this.createParagraph();
+        }
+        return super.prepForXml();
     }
 }

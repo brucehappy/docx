@@ -49,6 +49,21 @@ describe("File", () => {
             expect(tree["w:body"][1]["w:sectPr"][5]["w:footerReference"][0]._attr["w:type"]).to.equal("first");
         });
 
+        it("should create with non-empty header and footer", () => {
+            const doc = new File();
+            const tree = new Formatter().format(doc.Header.Header);
+            expect(tree["w:hdr"]).to.be.an.instanceof(Array);
+            expect(tree["w:hdr"].length).to.equal(2);
+            const keys = Object.keys(tree["w:hdr"][1]);
+            expect(keys[0]).to.equal("w:p");
+
+            const tree2 = new Formatter().format(doc.Footer.Footer);
+            expect(tree2["w:ftr"]).to.be.an.instanceof(Array);
+            expect(tree2["w:ftr"].length).to.equal(2);
+            const keys2 = Object.keys(tree2["w:ftr"][1]);
+            expect(keys2[0]).to.equal("w:p");
+        });
+
         it("should create with correct headers", () => {
             const doc = new File();
             const header = doc.createHeader();
