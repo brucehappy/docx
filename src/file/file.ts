@@ -73,12 +73,17 @@ export class File {
         if (fileProperties.template && options.externalStyles) {
             throw Error("can not use both template and external styles");
         }
+        if ((fileProperties.template || options.externalStyles) && fileProperties.styles) {
+            throw Error("can not use both styles and either template or external styles");
+        }
         if (fileProperties.template) {
             const stylesFactory = new ExternalStylesFactory();
             this.styles = stylesFactory.newInstance(fileProperties.template.styles);
         } else if (options.externalStyles) {
             const stylesFactory = new ExternalStylesFactory();
             this.styles = stylesFactory.newInstance(options.externalStyles);
+        } else if (fileProperties.styles) {
+            this.styles = fileProperties.styles;
         } else {
             const stylesFactory = new DefaultStylesFactory();
             this.styles = stylesFactory.newInstance();
