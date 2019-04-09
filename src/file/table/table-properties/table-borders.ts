@@ -1,23 +1,48 @@
-import { XmlAttributeComponent, XmlComponent } from "file/xml-components";
+import { BorderStyle } from "file/styles/border";
+import { IXmlableObject, XmlAttributeComponent, XmlComponent } from "file/xml-components";
 
 export class TableBorders extends XmlComponent {
     constructor() {
         super("w:tblBorders");
-        this.root.push(new TableBordersElement("w:top", "single", 4, 0, "auto"));
-        this.root.push(new TableBordersElement("w:left", "single", 4, 0, "auto"));
-        this.root.push(new TableBordersElement("w:bottom", "single", 4, 0, "auto"));
-        this.root.push(new TableBordersElement("w:right", "single", 4, 0, "auto"));
-        this.root.push(new TableBordersElement("w:insideH", "single", 4, 0, "auto"));
-        this.root.push(new TableBordersElement("w:insideV", "single", 4, 0, "auto"));
+    }
+
+    public prepForXml(): IXmlableObject | undefined {
+        if (this.root.length > 0) {
+            return super.prepForXml();
+        }
+    }
+
+    public addTopBorder(style: BorderStyle, size: number, space: number, color: string): void {
+        this.root.push(new TableBordersElement("w:top", style, size, space, color));
+    }
+
+    public addLeftBorder(style: BorderStyle, size: number, space: number, color: string): void {
+        this.root.push(new TableBordersElement("w:left", style, size, space, color));
+    }
+
+    public addBottomBorder(style: BorderStyle, size: number, space: number, color: string): void {
+        this.root.push(new TableBordersElement("w:bottom", style, size, space, color));
+    }
+
+    public addRightBorder(style: BorderStyle, size: number, space: number, color: string): void {
+        this.root.push(new TableBordersElement("w:right", style, size, space, color));
+    }
+
+    public addInsideHBorder(style: BorderStyle, size: number, space: number, color: string): void {
+        this.root.push(new TableBordersElement("w:insideH", style, size, space, color));
+    }
+
+    public addInsideVBorder(style: BorderStyle, size: number, space: number, color: string): void {
+        this.root.push(new TableBordersElement("w:insideV", style, size, space, color));
     }
 }
 
 class TableBordersElement extends XmlComponent {
-    constructor(elementName: string, value: string, size: number, space: number, color: string) {
+    constructor(elementName: string, style: BorderStyle, size: number, space: number, color: string) {
         super(elementName);
         this.root.push(
             new TableBordersAttributes({
-                value,
+                style,
                 size,
                 space,
                 color,
@@ -27,13 +52,13 @@ class TableBordersElement extends XmlComponent {
 }
 
 class TableBordersAttributes extends XmlAttributeComponent<{
-    readonly value: string;
+    readonly style: BorderStyle;
     readonly size: number;
     readonly space: number;
     readonly color: string;
 }> {
     protected readonly xmlKeys = {
-        value: "w:val",
+        style: "w:val",
         size: "w:sz",
         space: "w:space",
         color: "w:color",

@@ -8,7 +8,7 @@ import { Table } from "./table";
 // import { WidthType } from "./table-cell";
 import { RelativeHorizontalPosition, RelativeVerticalPosition, TableAnchorType } from "./table-properties";
 
-const DEFAULT_TABLE_PROPERTIES = {
+const CELL_MARGINS = {
     "w:tblCellMar": [
         {
             "w:bottom": [
@@ -134,7 +134,7 @@ describe("Table", () => {
             const cell = { "w:tc": [{ "w:tcPr": [] }, { "w:p": [{ "w:pPr": [] }] }] };
             expect(tree).to.deep.equal({
                 "w:tbl": [
-                    { "w:tblPr": [DEFAULT_TABLE_PROPERTIES, BORDERS, WIDTHS] },
+                    { "w:tblPr": [BORDERS, CELL_MARGINS, WIDTHS] },
                     {
                         "w:tblGrid": [{ "w:gridCol": [{ _attr: { "w:w": 100 } }] }, { "w:gridCol": [{ _attr: { "w:w": 100 } }] }],
                     },
@@ -180,7 +180,7 @@ describe("Table", () => {
             });
             expect(tree).to.deep.equal({
                 "w:tbl": [
-                    { "w:tblPr": [DEFAULT_TABLE_PROPERTIES, BORDERS, WIDTHS] },
+                    { "w:tblPr": [BORDERS, CELL_MARGINS, WIDTHS] },
                     {
                         "w:tblGrid": [{ "w:gridCol": [{ _attr: { "w:w": 100 } }] }, { "w:gridCol": [{ _attr: { "w:w": 100 } }] }],
                     },
@@ -230,7 +230,7 @@ describe("Table", () => {
             });
             expect(tree).to.deep.equal({
                 "w:tbl": [
-                    { "w:tblPr": [DEFAULT_TABLE_PROPERTIES, BORDERS, WIDTHS] },
+                    { "w:tblPr": [BORDERS, CELL_MARGINS, WIDTHS] },
                     {
                         "w:tblGrid": [{ "w:gridCol": [{ _attr: { "w:w": 100 } }] }, { "w:gridCol": [{ _attr: { "w:w": 100 } }] }],
                     },
@@ -250,7 +250,7 @@ describe("Table", () => {
     //             .which.is.an("array")
     //             .with.has.length.at.least(1);
     //         expect(tree["w:tbl"][0]).to.deep.equal({
-    //             "w:tblPr": [DEFAULT_TABLE_PROPERTIES, { "w:tblW": [{ _attr: { "w:type": "pct", "w:w": "1000%" } }] }],
+    //             "w:tblPr": [BORDERS, CELL_MARGINS, { "w:tblW": [{ _attr: { "w:type": "pct", "w:w": "1000%" } }] }],
     //         });
     //     });
 
@@ -259,7 +259,7 @@ describe("Table", () => {
     //         const tree = new Formatter().format(table);
 
     //         expect(tree["w:tbl"][0]).to.deep.equal({
-    //             "w:tblPr": [DEFAULT_TABLE_PROPERTIES, { "w:tblW": [{ _attr: { "w:type": "auto", "w:w": 1000 } }] }],
+    //             "w:tblPr": [BORDERS, CELL_MARGINS, { "w:tblW": [{ _attr: { "w:type": "auto", "w:w": 1000 } }] }],
     //         });
     //     });
     // });
@@ -276,7 +276,7 @@ describe("Table", () => {
                 .which.is.an("array")
                 .with.has.length.at.least(1);
             expect(tree["w:tbl"][0]).to.deep.equal({
-                "w:tblPr": [DEFAULT_TABLE_PROPERTIES, BORDERS, WIDTHS, { "w:tblLayout": [{ _attr: { "w:type": "fixed" } }] }],
+                "w:tblPr": [BORDERS, CELL_MARGINS, WIDTHS, { "w:tblLayout": [{ _attr: { "w:type": "fixed" } }] }],
             });
         });
     });
@@ -417,8 +417,8 @@ describe("Table", () => {
                 .with.has.length.at.least(1);
             expect(tree["w:tbl"][0]).to.deep.equal({
                 "w:tblPr": [
-                    DEFAULT_TABLE_PROPERTIES,
                     BORDERS,
+                    CELL_MARGINS,
                     WIDTHS,
                     {
                         "w:tblpPr": [

@@ -1,6 +1,7 @@
 // http://officeopenxml.com/WPtableGrid.php
 import { XmlComponent } from "file/xml-components";
 
+import { BorderStyle } from "file/styles/border";
 import { TableGrid } from "./grid";
 import { TableCell, WidthType } from "./table-cell";
 import { TableColumn } from "./table-column";
@@ -48,7 +49,12 @@ export class Table extends XmlComponent {
         super("w:tbl");
         this.properties = new TableProperties();
         this.root.push(this.properties);
-        this.properties.setBorder();
+        this.properties.Border.addTopBorder(BorderStyle.SINGLE, 4, 0, "auto");
+        this.properties.Border.addLeftBorder(BorderStyle.SINGLE, 4, 0, "auto");
+        this.properties.Border.addBottomBorder(BorderStyle.SINGLE, 4, 0, "auto");
+        this.properties.Border.addRightBorder(BorderStyle.SINGLE, 4, 0, "auto");
+        this.properties.Border.addInsideHBorder(BorderStyle.SINGLE, 4, 0, "auto");
+        this.properties.Border.addInsideVBorder(BorderStyle.SINGLE, 4, 0, "auto");
         this.properties.setWidth(width, widthUnitType);
         this.properties.CellMargin.addBottomMargin(bottom || 0, margainUnitType);
         this.properties.CellMargin.addTopMargin(top || 0, margainUnitType);

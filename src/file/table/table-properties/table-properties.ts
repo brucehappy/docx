@@ -10,9 +10,15 @@ import { PreferredTableWidth } from "./table-width";
 
 export class TableProperties extends XmlComponent {
     private readonly cellMargin: TableCellMargin;
+    private readonly border: TableBorders;
 
     constructor() {
         super("w:tblPr");
+
+        // Borders must appear in the tblPr before cell margins
+        // in order for them to be applied properly in Word Online
+        this.border = new TableBorders();
+        this.root.push(this.border);
 
         this.cellMargin = new TableCellMargin();
         this.root.push(this.cellMargin);
@@ -28,9 +34,8 @@ export class TableProperties extends XmlComponent {
         return this;
     }
 
-    public setBorder(): TableProperties {
-        this.root.push(new TableBorders());
-        return this;
+    public get Border(): TableBorders {
+        return this.border;
     }
 
     public get CellMargin(): TableCellMargin {
