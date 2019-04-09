@@ -1,5 +1,5 @@
 // http://officeopenxml.com/WPheaders.php
-import { InitializableXmlComponent, XmlComponent } from "file/xml-components";
+import { InitializableXmlComponent, IXmlableObject, XmlComponent } from "file/xml-components";
 import { Paragraph } from "../paragraph";
 import { Table } from "../table";
 import { HeaderAttributes } from "./header-attributes";
@@ -70,5 +70,14 @@ export class Header extends InitializableXmlComponent {
         });
         this.addTable(table);
         return table;
+    }
+
+    public prepForXml(): IXmlableObject | undefined {
+        // Word Online requires that all Headers have content, so if we only
+        // have our attributes, add an empty paragraph to satisfy it.
+        if (!this.root.filter((e) => !(e instanceof HeaderAttributes)).length) {
+            this.createParagraph();
+        }
+        return super.prepForXml();
     }
 }
