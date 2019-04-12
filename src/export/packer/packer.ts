@@ -1,4 +1,5 @@
 import { File } from "file";
+import { Readable } from "stream";
 import { Compiler } from "./next-compiler";
 
 export class Packer {
@@ -6,6 +7,15 @@ export class Packer {
 
     constructor() {
         this.compiler = new Compiler();
+    }
+
+    public async toStream(file: File): Promise<Readable> {
+        const zip = this.compiler.compile(file);
+        const zipData = (await zip.generateNodeStream({
+            mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        })) as Readable;
+
+        return zipData;
     }
 
     public async toBuffer(file: File): Promise<Buffer> {
