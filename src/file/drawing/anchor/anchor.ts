@@ -1,4 +1,5 @@
 // http://officeopenxml.com/drwPicFloating.php
+import { HyperlinkOnClick } from "file/drawing/links";
 import { IMediaData, IMediaDataDimensions } from "file/media";
 import { XmlComponent } from "file/xml-components";
 import { IDrawingOptions } from "../drawing";
@@ -21,8 +22,14 @@ const defaultOptions: IFloating = {
 };
 
 export class Anchor extends XmlComponent {
+    private readonly docProperties: DocProperties;
+    private readonly graphic: Graphic;
+
     constructor(mediaData: IMediaData, dimensions: IMediaDataDimensions, drawingOptions: IDrawingOptions) {
         super("wp:anchor");
+
+        this.docProperties = new DocProperties();
+        this.graphic = new Graphic(mediaData, dimensions.emus.x, dimensions.emus.y);
 
         const floating = {
             margins: {
@@ -75,8 +82,13 @@ export class Anchor extends XmlComponent {
             this.root.push(new WrapNone());
         }
 
-        this.root.push(new DocProperties());
+        this.root.push(this.docProperties);
         this.root.push(new GraphicFrameProperties());
-        this.root.push(new Graphic(mediaData, dimensions.emus.x, dimensions.emus.y));
+        this.root.push(this.graphic);
+    }
+
+    public addHyperlinkOnClick(hyperlinkOnClick: HyperlinkOnClick): void {
+        this.docProperties.addHyperlinkOnClick(hyperlinkOnClick);
+        this.graphic.addHyperlinkOnClick(hyperlinkOnClick);
     }
 }

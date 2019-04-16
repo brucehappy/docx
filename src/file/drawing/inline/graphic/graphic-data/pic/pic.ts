@@ -1,4 +1,5 @@
 // http://officeopenxml.com/drwPic.php
+import { HyperlinkOnClick } from "file/drawing/links";
 import { IMediaData } from "file/media";
 import { XmlComponent } from "file/xml-components";
 
@@ -9,6 +10,7 @@ import { ShapeProperties } from "./shape-properties/shape-properties";
 
 export class Pic extends XmlComponent {
     private readonly shapeProperties: ShapeProperties;
+    private readonly nonVisualPicProperties: NonVisualPicProperties;
 
     constructor(mediaData: IMediaData, x: number, y: number) {
         super("pic:pic");
@@ -20,13 +22,18 @@ export class Pic extends XmlComponent {
         );
 
         this.shapeProperties = new ShapeProperties(x, y);
+        this.nonVisualPicProperties = new NonVisualPicProperties();
 
-        this.root.push(new NonVisualPicProperties());
+        this.root.push(this.nonVisualPicProperties);
         this.root.push(new BlipFill(mediaData));
-        this.root.push(new ShapeProperties(x, y));
+        this.root.push(this.shapeProperties);
     }
 
     public setXY(x: number, y: number): void {
         this.shapeProperties.setXY(x, y);
+    }
+
+    public addHyperlinkOnClick(hyperlinkOnClick: HyperlinkOnClick): void {
+        this.nonVisualPicProperties.addHyperlinkOnClick(hyperlinkOnClick);
     }
 }
