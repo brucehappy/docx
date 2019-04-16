@@ -10,7 +10,7 @@ import {
     IHeaderFooterGroup,
     SectionPropertiesOptions,
 } from "./document/body/section-properties";
-import { IDrawingOptions } from "./drawing";
+import { HyperlinkOnClick, IDrawingOptions } from "./drawing";
 import { IFileProperties } from "./file-properties";
 import { FooterWrapper, IDocumentFooter } from "./footer-wrapper";
 import { FootNotes } from "./footnotes";
@@ -167,6 +167,17 @@ export class File {
             TargetModeType.EXTERNAL,
         );
         return hyperlink;
+    }
+
+    public createHyperlinkOnClick(link: string): HyperlinkOnClick {
+        const hyperlinkOnClick = new HyperlinkOnClick(this.docRelationships.RelationshipCount);
+        this.docRelationships.createRelationship(
+            hyperlinkOnClick.linkId,
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink",
+            link,
+            TargetModeType.EXTERNAL,
+        );
+        return hyperlinkOnClick;
     }
 
     public createInternalHyperLink(anchor: string, text?: string): Hyperlink {

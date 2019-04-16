@@ -1,6 +1,7 @@
 import { IMediaData } from "file/media";
 import { XmlComponent } from "file/xml-components";
 
+import { HyperlinkOnClick } from "file/drawing/links";
 import { GraphicDataAttributes } from "./graphic-data-attribute";
 import { Pic } from "./pic";
 
@@ -23,5 +24,9 @@ export class GraphicData extends XmlComponent {
 
     public setXY(x: number, y: number): void {
         this.pic.setXY(x, y);
+    }
+
+    public addHyperlinkOnClick(hyperlinkOnClick: HyperlinkOnClick): void {
+        this.pic.addHyperlinkOnClick(hyperlinkOnClick);
     }
 }

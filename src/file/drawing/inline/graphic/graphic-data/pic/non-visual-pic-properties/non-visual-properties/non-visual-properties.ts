@@ -1,3 +1,4 @@
+import { HyperlinkOnClick } from "file/drawing/links";
 import { XmlComponent } from "file/xml-components";
 import { NonVisualPropertiesAttributes } from "./non-visual-properties-attributes";
 
@@ -12,5 +13,9 @@ export class NonVisualProperties extends XmlComponent {
                 descr: "",
             }),
         );
+    }
+
+    public addHyperlinkOnClick(hyperlinkOnClick: HyperlinkOnClick): void {
+        this.root.push(hyperlinkOnClick);
     }
 }

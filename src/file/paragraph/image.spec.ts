@@ -181,8 +181,8 @@ describe("Image", () => {
                                                                                     {
                                                                                         "a:ext": {
                                                                                             _attr: {
-                                                                                                cx: 10,
-                                                                                                cy: 10,
+                                                                                                cx: 20,
+                                                                                                cy: 20,
                                                                                             },
                                                                                         },
                                                                                     },

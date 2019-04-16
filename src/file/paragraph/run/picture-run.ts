@@ -1,3 +1,4 @@
+import { HyperlinkOnClick } from "file/drawing/links";
 import { Drawing } from "../../drawing";
 import { IDrawingOptions } from "../../drawing/drawing";
 import { IMediaData } from "../../media/data";
@@ -16,6 +17,10 @@ export class PictureRun extends Run {
         this.drawing = new Drawing(imageData, drawingOptions);
 
         this.root.push(this.drawing);
+    }
+
+    public addHyperlinkOnClick(hyperlinkOnClick: HyperlinkOnClick): void {
+        this.drawing.addHyperlinkOnClick(hyperlinkOnClick);
     }
 
     public scale(factorX: number = 1, factorY: number = factorX): void {

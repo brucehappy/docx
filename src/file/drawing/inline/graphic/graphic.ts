@@ -1,6 +1,7 @@
 import { IMediaData } from "file/media";
 import { XmlAttributeComponent, XmlComponent } from "file/xml-components";
 
+import { HyperlinkOnClick } from "file/drawing/links";
 import { GraphicData } from "./graphic-data";
 
 interface IGraphicProperties {
@@ -31,5 +32,9 @@ export class Graphic extends XmlComponent {
 
     public setXY(x: number, y: number): void {
         this.data.setXY(x, y);
+    }
+
+    public addHyperlinkOnClick(hyperlinkOnClick: HyperlinkOnClick): void {
+        this.data.addHyperlinkOnClick(hyperlinkOnClick);
     }
 }
