@@ -4,6 +4,7 @@ import * as xml from "xml";
 import { File } from "file";
 import { Formatter } from "../formatter";
 import { ImageReplacer } from "./image-replacer";
+import { UniqueIdReplacer } from "./unique-id-replacer";
 
 interface IXmlifyedFile {
     readonly data: string;
@@ -30,15 +31,31 @@ interface IXmlifyedFileMapping {
 export class Compiler {
     private readonly formatter: Formatter;
     private readonly imageReplacer: ImageReplacer;
+    private readonly uniqueIdReplacer: UniqueIdReplacer;
 
     constructor() {
         this.formatter = new Formatter();
         this.imageReplacer = new ImageReplacer();
+        this.uniqueIdReplacer = new UniqueIdReplacer();
     }
 
     public compile(file: File): JSZip {
         const zip = new JSZip();
         const xmlifiedFileMapping = this.xmlifyFile(file);
+        const date = new Date(315532800000); // 1980-01-01 00:00:00 GMT
+        const nonMediaZipOptions = {
+            date: date,
+            createFolders: false,
+            compression: "DEFLATE",
+            compressionOptions: {
+                level: 1, // fastest offered by jszip, though word uses 'superfast'
+            },
+        };
+        const mediaZipOptions = {
+            date: date,
+            createFolders: false,
+            compression: "STORE",
+        };
 
         for (const key in xmlifiedFileMapping) {
             if (!xmlifiedFileMapping[key]) {
@@ -49,16 +66,16 @@ export class Compiler {
 
             if (Array.isArray(obj)) {
                 for (const subFile of obj) {
-                    zip.file(subFile.path, subFile.data);
+                    zip.file(subFile.path, subFile.data, nonMediaZipOptions);
                 }
             } else {
-                zip.file(obj.path, obj.data);
+                zip.file(obj.path, obj.data, nonMediaZipOptions);
             }
         }
 
         for (const data of file.Media.Array) {
             const mediaData = data.stream;
-            zip.file(`word/media/${data.fileName}`, mediaData);
+            zip.file(`word/media/${data.fileName}`, mediaData, mediaZipOptions);
         }
 
         return zip;
@@ -68,13 +85,14 @@ export class Compiler {
         file.verifyUpdateFields();
         const documentRelationshipCount = file.DocumentRelationships.RelationshipCount + 1;
 
+        const tempDocumentXmlData = xml(this.formatter.format(file.Document));
+        const documentXmlData = this.uniqueIdReplacer.replace(tempDocumentXmlData);
+        const documentMediaDatas = this.imageReplacer.getMediaData(documentXmlData, file.Media);
+
         return {
             Relationships: {
                 data: (() => {
-                    const xmlData = xml(this.formatter.format(file.Document));
-                    const mediaDatas = this.imageReplacer.getMediaData(xmlData, file.Media);
-
-                    mediaDatas.forEach((mediaData, i) => {
+                    documentMediaDatas.forEach((mediaData, i) => {
                         file.DocumentRelationships.createRelationship(
                             documentRelationshipCount + i,
                             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
@@ -87,13 +105,7 @@ export class Compiler {
                 path: "word/_rels/document.xml.rels",
             },
             Document: {
-                data: (() => {
-                    const tempXmlData = xml(this.formatter.format(file.Document), true);
-                    const mediaDatas = this.imageReplacer.getMediaData(tempXmlData, file.Media);
-                    const xmlData = this.imageReplacer.replace(tempXmlData, mediaDatas, documentRelationshipCount);
-
-                    return xmlData;
-                })(),
+                data: this.imageReplacer.replace(documentXmlData, documentMediaDatas, documentRelationshipCount),
                 path: "word/document.xml",
             },
             Styles: {
@@ -152,7 +164,8 @@ export class Compiler {
                 };
             }),
             Headers: file.Headers.map((headerWrapper, index) => {
-                const tempXmlData = xml(this.formatter.format(headerWrapper.Header));
+                const tempHeaderXmlData = xml(this.formatter.format(headerWrapper.Header));
+                const tempXmlData = this.uniqueIdReplacer.replace(tempHeaderXmlData);
                 const mediaDatas = this.imageReplacer.getMediaData(tempXmlData, file.Media);
                 // TODO: 0 needs to be changed when headers get relationships of their own
                 const xmlData = this.imageReplacer.replace(tempXmlData, mediaDatas, 0);
@@ -163,7 +176,8 @@ export class Compiler {
                 };
             }),
             Footers: file.Footers.map((footerWrapper, index) => {
-                const tempXmlData = xml(this.formatter.format(footerWrapper.Footer));
+                const tempFooterXmlData = xml(this.formatter.format(footerWrapper.Footer));
+                const tempXmlData = this.uniqueIdReplacer.replace(tempFooterXmlData);
                 const mediaDatas = this.imageReplacer.getMediaData(tempXmlData, file.Media);
                 // TODO: 0 needs to be changed when headers get relationships of their own
                 const xmlData = this.imageReplacer.replace(tempXmlData, mediaDatas, 0);

@@ -75,7 +75,7 @@ export class Anchor extends XmlComponent {
             this.root.push(new WrapNone());
         }
 
-        this.root.push(new DocProperties());
+        this.root.push(new DocProperties(mediaData));
         this.root.push(new GraphicFrameProperties());
         this.root.push(new Graphic(mediaData, dimensions.emus.x, dimensions.emus.y));
     }

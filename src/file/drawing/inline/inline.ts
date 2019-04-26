@@ -29,7 +29,7 @@ export class Inline extends XmlComponent {
 
         this.root.push(this.extent);
         this.root.push(new EffectExtent());
-        this.root.push(new DocProperties());
+        this.root.push(new DocProperties(mediaData));
         this.root.push(new GraphicFrameProperties());
         this.root.push(this.graphic);
     }
