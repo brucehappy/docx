@@ -6,9 +6,11 @@ export interface IPropertiesOptions {
     readonly title?: string;
     readonly subject?: string;
     readonly creator?: string;
+    readonly created?: Date;
     readonly keywords?: string;
     readonly description?: string;
     readonly lastModifiedBy?: string;
+    readonly lastModified?: Date;
     readonly revision?: string;
     readonly externalStyles?: string;
 }
@@ -46,7 +48,7 @@ export class CoreProperties extends XmlComponent {
         if (options.revision) {
             this.root.push(new Revision(options.revision));
         }
-        this.root.push(new Created());
-        this.root.push(new Modified());
+        this.root.push(new Created(options.created));
+        this.root.push(new Modified(options.lastModified));
     }
 }
