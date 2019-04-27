@@ -28,7 +28,7 @@ export class Inline extends XmlComponent {
 
         this.extent = new Extent(dimensions.emus.x, dimensions.emus.y);
         this.graphic = new Graphic(mediaData, dimensions.emus.x, dimensions.emus.y);
-        this.docProperties = new DocProperties();
+        this.docProperties = new DocProperties(mediaData);
 
         this.root.push(this.extent);
         this.root.push(new EffectExtent());

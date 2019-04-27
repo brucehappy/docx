@@ -11,25 +11,17 @@ export class Media {
         width?: number,
         height?: number,
         drawingOptions?: IDrawingOptions,
+        name?: string,
+        description?: string,
     ): Image {
         // Workaround to expose id without exposing to API
-        const mediaData = file.Media.addMedia(buffer, width, height);
+        const mediaData = file.Media.addMedia(buffer, width, height, name, description);
         return new Image(new ImageParagraph(mediaData, drawingOptions));
     }
 
-    private static generateId(): string {
-        // https://gist.github.com/6174/6062387
-        return (
-            Math.random()
-                .toString(36)
-                .substring(2, 15) +
-            Math.random()
-                .toString(36)
-                .substring(2, 15)
-        );
-    }
-
     private readonly map: Map<string, IMediaData>;
+    // tslint:disable-next-line:readonly-keyword
+    private count: number = 0;
 
     constructor() {
         this.map = new Map<string, IMediaData>();
@@ -45,30 +37,42 @@ export class Media {
         return data;
     }
 
-    public addMedia(buffer: Buffer | string | Uint8Array | ArrayBuffer, width: number = 100, height: number = 100): IMediaData {
-        const key = `${Media.generateId()}.png`;
-
+    public addMedia(
+        buffer: Buffer | string | Uint8Array | ArrayBuffer,
+        width: number = 100,
+        height: number = 100,
+        name?: string,
+        description?: string,
+    ): IMediaData {
         return this.createMedia(
-            key,
+            this.generateKey(name),
             {
                 width: width,
                 height: height,
             },
             buffer,
+            name,
+            description,
         );
+    }
+
+    private generateKey(name?: string): string {
+        return "image" + ++this.count + (((name && /[.][^.]+$/.exec(name)) || [])[0] || ".png");
     }
 
     private createMedia(
         key: string,
         dimensions: { readonly width: number; readonly height: number },
         data: Buffer | string | Uint8Array | ArrayBuffer,
-        filePath?: string,
+        name?: string,
+        description?: string,
     ): IMediaData {
         const newData = typeof data === "string" ? this.convertDataURIToBinary(data) : data;
 
         const imageData: IMediaData = {
             stream: newData,
-            path: filePath,
+            name: name,
+            description: description,
             fileName: key,
             dimensions: {
                 pixels: {

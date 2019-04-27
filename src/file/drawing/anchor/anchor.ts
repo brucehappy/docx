@@ -28,7 +28,7 @@ export class Anchor extends XmlComponent {
     constructor(mediaData: IMediaData, dimensions: IMediaDataDimensions, drawingOptions: IDrawingOptions) {
         super("wp:anchor");
 
-        this.docProperties = new DocProperties();
+        this.docProperties = new DocProperties(mediaData);
         this.graphic = new Graphic(mediaData, dimensions.emus.x, dimensions.emus.y);
 
         const floating = {

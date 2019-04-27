@@ -13,7 +13,6 @@ describe("Image", () => {
     beforeEach(() => {
         image = new ImageParagraph({
             stream: new Buffer(""),
-            path: "",
             fileName: "test.png",
             dimensions: {
                 pixels: {
@@ -82,9 +81,7 @@ describe("Image", () => {
                                             {
                                                 "wp:docPr": {
                                                     _attr: {
-                                                        descr: "",
-                                                        id: 0,
-                                                        name: "",
+                                                        id: "uId{wp:docPr}",
                                                     },
                                                 },
                                             },
@@ -127,9 +124,7 @@ describe("Image", () => {
                                                                             {
                                                                                 "pic:cNvPr": {
                                                                                     _attr: {
-                                                                                        desc: "",
-                                                                                        id: 0,
-                                                                                        name: "",
+                                                                                        id: "uId{pic:cNvPr}",
                                                                                     },
                                                                                 },
                                                                             },

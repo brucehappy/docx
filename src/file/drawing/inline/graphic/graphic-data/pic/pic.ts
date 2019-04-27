@@ -22,7 +22,7 @@ export class Pic extends XmlComponent {
         );
 
         this.shapeProperties = new ShapeProperties(x, y);
-        this.nonVisualPicProperties = new NonVisualPicProperties();
+        this.nonVisualPicProperties = new NonVisualPicProperties(mediaData);
 
         this.root.push(this.nonVisualPicProperties);
         this.root.push(new BlipFill(mediaData));
