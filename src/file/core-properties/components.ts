@@ -51,39 +51,39 @@ export class Revision extends XmlComponent {
 }
 
 export abstract class DateComponent extends XmlComponent {
-    protected getCurrentDate(): string {
-        const date = new Date();
-        const year = date.getFullYear();
-        const month = ("0" + (date.getMonth() + 1)).slice(-2);
-        const day = ("0" + date.getDate()).slice(-2);
-        const hours = ("0" + date.getHours()).slice(-2);
-        const minutes = ("0" + date.getMinutes()).slice(-2);
-        const seconds = ("0" + date.getSeconds()).slice(-2);
+    protected getDateString(date?: Date): string {
+        const d = date || new Date();
+        const year = d.getUTCFullYear();
+        const month = ("0" + (d.getUTCMonth() + 1)).slice(-2);
+        const day = ("0" + d.getUTCDate()).slice(-2);
+        const hours = ("0" + d.getUTCHours()).slice(-2);
+        const minutes = ("0" + d.getUTCMinutes()).slice(-2);
+        const seconds = ("0" + d.getUTCSeconds()).slice(-2);
 
         return year + "-" + month + "-" + day + "T" + hours + ":" + minutes + ":" + seconds + "Z";
     }
 }
 
 export class Created extends DateComponent {
-    constructor() {
+    constructor(date?: Date) {
         super("dcterms:created");
         this.root.push(
             new DocumentAttributes({
                 type: "dcterms:W3CDTF",
             }),
         );
-        this.root.push(this.getCurrentDate());
+        this.root.push(this.getDateString(date));
     }
 }
 
 export class Modified extends DateComponent {
-    constructor() {
+    constructor(date?: Date) {
         super("dcterms:modified");
         this.root.push(
             new DocumentAttributes({
                 type: "dcterms:W3CDTF",
             }),
         );
-        this.root.push(this.getCurrentDate());
+        this.root.push(this.getDateString(date));
     }
 }
