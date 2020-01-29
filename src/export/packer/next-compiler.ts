@@ -105,7 +105,11 @@ export class Compiler {
                 path: "word/_rels/document.xml.rels",
             },
             Document: {
-                data: this.imageReplacer.replace(documentXmlData, documentMediaDatas, documentRelationshipCount),
+                data: (() => {
+                    const xmlData = this.imageReplacer.replace(documentXmlData, documentMediaDatas, documentRelationshipCount);
+
+                    return xmlData;
+                })(),
                 path: "word/document.xml",
             },
             Styles: {

@@ -14,30 +14,33 @@ export class Packer {
 
     public static async toBuffer(file: File, prettify?: boolean): Promise<Buffer> {
         const zip = this.compiler.compile(file, prettify);
-        const zipData = (await zip.generateAsync({
+        const zipData = await zip.generateAsync({
             type: "nodebuffer",
             mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        })) as Buffer;
+            compression: "DEFLATE",
+        });
 
         return zipData;
     }
 
     public static async toBase64String(file: File, prettify?: boolean): Promise<string> {
         const zip = this.compiler.compile(file, prettify);
-        const zipData = (await zip.generateAsync({
+        const zipData = await zip.generateAsync({
             type: "base64",
             mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        })) as string;
+            compression: "DEFLATE",
+        });
 
         return zipData;
     }
 
     public static async toBlob(file: File, prettify?: boolean): Promise<Blob> {
         const zip = this.compiler.compile(file, prettify);
-        const zipData = (await zip.generateAsync({
+        const zipData = await zip.generateAsync({
             type: "blob",
             mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        })) as Blob;
+            compression: "DEFLATE",
+        });
 
         return zipData;
     }

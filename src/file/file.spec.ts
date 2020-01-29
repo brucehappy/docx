@@ -6,7 +6,7 @@ import { Formatter } from "export/formatter";
 import { File } from "./file";
 import { Footer, Header } from "./header";
 import { Paragraph } from "./paragraph";
-import { Table } from "./table";
+import { Table, TableCell, TableRow } from "./table";
 import { TableOfContents } from "./table-of-contents";
 
 describe("File", () => {
@@ -20,8 +20,8 @@ describe("File", () => {
 
             const tree = new Formatter().format(doc.Document.Body);
 
-            expect(tree["w:body"][1]["w:sectPr"][4]["w:headerReference"]._attr["w:type"]).to.equal("default");
-            expect(tree["w:body"][1]["w:sectPr"][5]["w:footerReference"]._attr["w:type"]).to.equal("default");
+            expect(tree["w:body"][0]["w:sectPr"][4]["w:headerReference"]._attr["w:type"]).to.equal("default");
+            expect(tree["w:body"][0]["w:sectPr"][5]["w:footerReference"]._attr["w:type"]).to.equal("default");
         });
 
         it("should create with correct headers and footers", () => {
@@ -39,8 +39,8 @@ describe("File", () => {
 
             const tree = new Formatter().format(doc.Document.Body);
 
-            expect(tree["w:body"][1]["w:sectPr"][4]["w:headerReference"]._attr["w:type"]).to.equal("default");
-            expect(tree["w:body"][1]["w:sectPr"][5]["w:footerReference"]._attr["w:type"]).to.equal("default");
+            expect(tree["w:body"][0]["w:sectPr"][4]["w:headerReference"]._attr["w:type"]).to.equal("default");
+            expect(tree["w:body"][0]["w:sectPr"][5]["w:footerReference"]._attr["w:type"]).to.equal("default");
         });
 
         it("should create with first headers and footers", () => {
@@ -58,8 +58,8 @@ describe("File", () => {
 
             const tree = new Formatter().format(doc.Document.Body);
 
-            expect(tree["w:body"][1]["w:sectPr"][5]["w:headerReference"]._attr["w:type"]).to.equal("first");
-            expect(tree["w:body"][1]["w:sectPr"][7]["w:footerReference"]._attr["w:type"]).to.equal("first");
+            expect(tree["w:body"][0]["w:sectPr"][5]["w:headerReference"]._attr["w:type"]).to.equal("first");
+            expect(tree["w:body"][0]["w:sectPr"][7]["w:footerReference"]._attr["w:type"]).to.equal("first");
         });
 
         it("should create with non-empty header and footer", () => {
@@ -111,13 +111,13 @@ describe("File", () => {
 
             const tree = new Formatter().format(doc.Document.Body);
 
-            expect(tree["w:body"][1]["w:sectPr"][4]["w:headerReference"]._attr["w:type"]).to.equal("default");
-            expect(tree["w:body"][1]["w:sectPr"][5]["w:headerReference"]._attr["w:type"]).to.equal("first");
-            expect(tree["w:body"][1]["w:sectPr"][6]["w:headerReference"]._attr["w:type"]).to.equal("even");
+            expect(tree["w:body"][0]["w:sectPr"][4]["w:headerReference"]._attr["w:type"]).to.equal("default");
+            expect(tree["w:body"][0]["w:sectPr"][5]["w:headerReference"]._attr["w:type"]).to.equal("first");
+            expect(tree["w:body"][0]["w:sectPr"][6]["w:headerReference"]._attr["w:type"]).to.equal("even");
 
-            expect(tree["w:body"][1]["w:sectPr"][7]["w:footerReference"]._attr["w:type"]).to.equal("default");
-            expect(tree["w:body"][1]["w:sectPr"][8]["w:footerReference"]._attr["w:type"]).to.equal("first");
-            expect(tree["w:body"][1]["w:sectPr"][9]["w:footerReference"]._attr["w:type"]).to.equal("even");
+            expect(tree["w:body"][0]["w:sectPr"][7]["w:footerReference"]._attr["w:type"]).to.equal("default");
+            expect(tree["w:body"][0]["w:sectPr"][8]["w:footerReference"]._attr["w:type"]).to.equal("first");
+            expect(tree["w:body"][0]["w:sectPr"][9]["w:footerReference"]._attr["w:type"]).to.equal("even");
         });
     });
 
@@ -138,8 +138,15 @@ describe("File", () => {
             file.addSection({
                 children: [
                     new Table({
-                        rows: 1,
-                        columns: 1,
+                        rows: [
+                            new TableRow({
+                                children: [
+                                    new TableCell({
+                                        children: [new Paragraph("hello")],
+                                    }),
+                                ],
+                            }),
+                        ],
                     }),
                 ],
             });
