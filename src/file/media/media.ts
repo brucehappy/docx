@@ -1,22 +1,24 @@
 import { IDrawingOptions } from "../drawing";
 import { File } from "../file";
-import { ImageParagraph } from "../paragraph";
+import { FooterWrapper } from "../footer-wrapper";
+import { HeaderWrapper } from "../header-wrapper";
+import { PictureRun } from "../paragraph";
 import { IMediaData } from "./data";
-import { Image } from "./image";
+// import { Image } from "./image";
 
 export class Media {
     public static addImage(
-        file: File,
+        file: File | HeaderWrapper | FooterWrapper,
         buffer: Buffer | string | Uint8Array | ArrayBuffer,
         width?: number,
         height?: number,
         drawingOptions?: IDrawingOptions,
         name?: string,
         description?: string,
-    ): Image {
+    ): PictureRun {
         // Workaround to expose id without exposing to API
         const mediaData = file.Media.addMedia(buffer, width, height, name, description);
-        return new Image(new ImageParagraph(mediaData, drawingOptions));
+        return new PictureRun(mediaData, drawingOptions);
     }
 
     private readonly map: Map<string, IMediaData>;

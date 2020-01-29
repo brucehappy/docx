@@ -6,6 +6,7 @@ import { TableGrid } from "./grid";
 import { TableCell, WidthType } from "./table-cell";
 import { TableColumn } from "./table-column";
 import { ITableFloatOptions, TableProperties } from "./table-properties";
+import { TableLayoutType } from "./table-properties/table-layout";
 import { TableRow } from "./table-row";
 /*
     0-width columns don't get rendered correctly, so we need
@@ -31,6 +32,7 @@ export interface ITableOptions {
         readonly left?: number;
     };
     readonly float?: ITableFloatOptions;
+    readonly layout?: TableLayoutType;
 }
 
 export class Table extends XmlComponent {
@@ -45,6 +47,7 @@ export class Table extends XmlComponent {
         columnWidths = Array<number>(columns).fill(100),
         margins: { marginUnitType, top, bottom, right, left } = { marginUnitType: WidthType.AUTO, top: 0, bottom: 0, right: 0, left: 0 },
         float,
+        layout,
     }: ITableOptions) {
         super("w:tbl");
         this.properties = new TableProperties();
@@ -79,6 +82,10 @@ export class Table extends XmlComponent {
         if (float) {
             this.properties.setTableFloatProperties(float);
         }
+
+        if (layout) {
+            this.properties.setLayout(layout);
+        }
     }
 
     public getRow(index: number): TableRow {
@@ -99,10 +106,5 @@ export class Table extends XmlComponent {
 
     public getCell(row: number, col: number): TableCell {
         return this.getRow(row).getCell(col);
-    }
-
-    public setFixedWidthLayout(): Table {
-        this.properties.setFixedWidthLayout();
-        return this;
     }
 }

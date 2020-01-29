@@ -66,9 +66,7 @@ describe("Drawing", () => {
                             {
                                 "wp:docPr": {
                                     _attr: {
-                                        descr: "",
-                                        id: 0,
-                                        name: "",
+                                        id: "uId{wp:docPr}",
                                     },
                                 },
                             },
@@ -111,9 +109,7 @@ describe("Drawing", () => {
                                                             {
                                                                 "pic:cNvPr": {
                                                                     _attr: {
-                                                                        desc: "",
-                                                                        id: 0,
-                                                                        name: "",
+                                                                        id: "uId{pic:cNvPr}",
                                                                     },
                                                                 },
                                                             },
@@ -293,9 +289,7 @@ describe("Drawing", () => {
                             {
                                 "wp:docPr": {
                                     _attr: {
-                                        descr: "",
-                                        id: 0,
-                                        name: "",
+                                        id: "uId{wp:docPr}",
                                     },
                                 },
                             },
@@ -338,9 +332,7 @@ describe("Drawing", () => {
                                                             {
                                                                 "pic:cNvPr": {
                                                                     _attr: {
-                                                                        desc: "",
-                                                                        id: 0,
-                                                                        name: "",
+                                                                        id: "uId{pic:cNvPr}",
                                                                     },
                                                                 },
                                                             },
