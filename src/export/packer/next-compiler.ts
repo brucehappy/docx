@@ -32,11 +32,13 @@ export class Compiler {
     private readonly formatter: Formatter;
     private readonly imageReplacer: ImageReplacer;
     private readonly uniqueIdReplacer: UniqueIdReplacer;
+    private readonly prettifyXml?: boolean;
 
-    constructor() {
+    constructor(prettifyXml?: boolean) {
         this.formatter = new Formatter();
         this.imageReplacer = new ImageReplacer();
         this.uniqueIdReplacer = new UniqueIdReplacer();
+        this.prettifyXml = prettifyXml;
     }
 
     public compile(file: File): JSZip {
@@ -85,7 +87,7 @@ export class Compiler {
         file.verifyUpdateFields();
         const documentRelationshipCount = file.DocumentRelationships.RelationshipCount + 1;
 
-        const tempDocumentXmlData = xml(this.formatter.format(file.Document));
+        const tempDocumentXmlData = xml(this.formatter.format(file.Document), this.prettifyXml);
         const documentXmlData = this.uniqueIdReplacer.replace(tempDocumentXmlData);
         const documentMediaDatas = this.imageReplacer.getMediaData(documentXmlData, file.Media);
 
@@ -100,7 +102,7 @@ export class Compiler {
                         );
                     });
 
-                    return xml(this.formatter.format(file.DocumentRelationships));
+                    return xml(this.formatter.format(file.DocumentRelationships), this.prettifyXml);
                 })(),
                 path: "word/_rels/document.xml.rels",
             },
@@ -109,7 +111,7 @@ export class Compiler {
                 path: "word/document.xml",
             },
             Styles: {
-                data: xml(this.formatter.format(file.Styles)),
+                data: xml(this.formatter.format(file.Styles), this.prettifyXml),
                 path: "word/styles.xml",
             },
             Properties: {
@@ -122,15 +124,15 @@ export class Compiler {
                 path: "docProps/core.xml",
             },
             Numbering: {
-                data: xml(this.formatter.format(file.Numbering)),
+                data: xml(this.formatter.format(file.Numbering), this.prettifyXml),
                 path: "word/numbering.xml",
             },
             FileRelationships: {
-                data: xml(this.formatter.format(file.FileRelationships)),
+                data: xml(this.formatter.format(file.FileRelationships), this.prettifyXml),
                 path: "_rels/.rels",
             },
             HeaderRelationships: file.Headers.map((headerWrapper, index) => {
-                const xmlData = xml(this.formatter.format(headerWrapper.Header));
+                const xmlData = xml(this.formatter.format(headerWrapper.Header), this.prettifyXml);
                 const mediaDatas = this.imageReplacer.getMediaData(xmlData, file.Media);
 
                 mediaDatas.forEach((mediaData, i) => {
@@ -142,12 +144,12 @@ export class Compiler {
                 });
 
                 return {
-                    data: xml(this.formatter.format(headerWrapper.Relationships)),
+                    data: xml(this.formatter.format(headerWrapper.Relationships), this.prettifyXml),
                     path: `word/_rels/header${index + 1}.xml.rels`,
                 };
             }),
             FooterRelationships: file.Footers.map((footerWrapper, index) => {
-                const xmlData = xml(this.formatter.format(footerWrapper.Footer));
+                const xmlData = xml(this.formatter.format(footerWrapper.Footer), this.prettifyXml);
                 const mediaDatas = this.imageReplacer.getMediaData(xmlData, file.Media);
 
                 mediaDatas.forEach((mediaData, i) => {
@@ -159,12 +161,12 @@ export class Compiler {
                 });
 
                 return {
-                    data: xml(this.formatter.format(footerWrapper.Relationships)),
+                    data: xml(this.formatter.format(footerWrapper.Relationships), this.prettifyXml),
                     path: `word/_rels/footer${index + 1}.xml.rels`,
                 };
             }),
             Headers: file.Headers.map((headerWrapper, index) => {
-                const tempHeaderXmlData = xml(this.formatter.format(headerWrapper.Header));
+                const tempHeaderXmlData = xml(this.formatter.format(headerWrapper.Header), this.prettifyXml);
                 const tempXmlData = this.uniqueIdReplacer.replace(tempHeaderXmlData);
                 const mediaDatas = this.imageReplacer.getMediaData(tempXmlData, file.Media);
                 // TODO: 0 needs to be changed when headers get relationships of their own
@@ -176,7 +178,7 @@ export class Compiler {
                 };
             }),
             Footers: file.Footers.map((footerWrapper, index) => {
-                const tempFooterXmlData = xml(this.formatter.format(footerWrapper.Footer));
+                const tempFooterXmlData = xml(this.formatter.format(footerWrapper.Footer), this.prettifyXml);
                 const tempXmlData = this.uniqueIdReplacer.replace(tempFooterXmlData);
                 const mediaDatas = this.imageReplacer.getMediaData(tempXmlData, file.Media);
                 // TODO: 0 needs to be changed when headers get relationships of their own
@@ -188,19 +190,19 @@ export class Compiler {
                 };
             }),
             ContentTypes: {
-                data: xml(this.formatter.format(file.ContentTypes)),
+                data: xml(this.formatter.format(file.ContentTypes), this.prettifyXml),
                 path: "[Content_Types].xml",
             },
             AppProperties: {
-                data: xml(this.formatter.format(file.AppProperties)),
+                data: xml(this.formatter.format(file.AppProperties), this.prettifyXml),
                 path: "docProps/app.xml",
             },
             FootNotes: {
-                data: xml(this.formatter.format(file.FootNotes)),
+                data: xml(this.formatter.format(file.FootNotes), this.prettifyXml),
                 path: "word/footnotes.xml",
             },
             Settings: {
-                data: xml(this.formatter.format(file.Settings)),
+                data: xml(this.formatter.format(file.Settings), this.prettifyXml),
                 path: "word/settings.xml",
             },
         };

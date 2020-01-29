@@ -5,8 +5,8 @@ import { Compiler } from "./next-compiler";
 export class Packer {
     private readonly compiler: Compiler;
 
-    constructor() {
-        this.compiler = new Compiler();
+    constructor(prettifyXml?: boolean) {
+        this.compiler = new Compiler(prettifyXml);
     }
 
     public async toStream(file: File): Promise<Readable> {
