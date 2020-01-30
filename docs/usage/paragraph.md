@@ -2,7 +2,7 @@
 
 > Everything (text, images, graphs etc) in OpenXML is organised in paragraphs.
 
-!> Paragraphs requires an understanding of [Sections](usage/sections.md).
+!> Paragraphs requires an understanding of [Sections](sections.md).
 
 You can create `Paragraphs` in the following ways:
 
@@ -16,11 +16,15 @@ const paragraph = new Paragraph("Short hand Hello World");
 
 ### Children Method
 
-This method is useful for adding different `text` with different styles or adding `images` inline.
+This method is useful for adding different [text](text.md) with different styles, [symbols](symbols.md), or adding [images](images.md) inline.
 
 ```ts
 const paragraph = new Paragraph({
-    children: [new TextRun("Lorem Ipsum Foo Bar"), new TextRun("Hello World")],
+    children: [
+        new TextRun("Lorem Ipsum Foo Bar"),
+        new TextRun("Hello World"),
+        new SymbolRun("F071"),
+    ],
 });
 ```
 
@@ -244,10 +248,15 @@ The above example will create a heading with a page break directly under it.
 
 ## Page Break
 
-To move to a new page (insert a page break), simply add `.pageBreak()` on a paragraph:
+To move to a new page (insert a page break):
 
 ```ts
-const paragraph = new docx.Paragraph("Amazing Heading").pageBreak();
+const paragraph = new docx.Paragraph({
+    children: [
+        new TextRun("Amazing Heading"),
+        new PageBreak(),
+    ]
+});
 ```
 
 The above example will create a heading and start a new page immediately afterwards.
