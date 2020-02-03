@@ -1,10 +1,10 @@
 // http://officeopenxml.com/WPtableGrid.php
 import { XmlComponent } from "file/xml-components";
 
-import { BorderStyle } from "file/styles/border";
+import { AlignmentType } from "../paragraph";
 import { TableGrid } from "./grid";
 import { TableCell, VerticalMergeType, WidthType } from "./table-cell";
-import { ITableFloatOptions, TableProperties } from "./table-properties";
+import { ITableBordersOptions, ITableFloatOptions, TableProperties } from "./table-properties";
 import { TableLayoutType } from "./table-properties/table-layout";
 import { TableRow } from "./table-row";
 
@@ -34,6 +34,8 @@ export interface ITableOptions {
     };
     readonly float?: ITableFloatOptions;
     readonly layout?: TableLayoutType;
+    readonly borders?: ITableBordersOptions;
+    readonly alignment?: AlignmentType;
 }
 
 export class Table extends XmlComponent {
@@ -46,16 +48,19 @@ export class Table extends XmlComponent {
         margins: { marginUnitType, top, bottom, right, left } = { marginUnitType: WidthType.AUTO, top: 0, bottom: 0, right: 0, left: 0 },
         float,
         layout,
+        borders,
+        alignment,
     }: ITableOptions) {
         super("w:tbl");
         this.properties = new TableProperties();
         this.root.push(this.properties);
-        this.properties.Border.addTopBorder(BorderStyle.SINGLE, 4, 0, "auto");
-        this.properties.Border.addLeftBorder(BorderStyle.SINGLE, 4, 0, "auto");
-        this.properties.Border.addBottomBorder(BorderStyle.SINGLE, 4, 0, "auto");
-        this.properties.Border.addRightBorder(BorderStyle.SINGLE, 4, 0, "auto");
-        this.properties.Border.addInsideHBorder(BorderStyle.SINGLE, 4, 0, "auto");
-        this.properties.Border.addInsideVBorder(BorderStyle.SINGLE, 4, 0, "auto");
+
+        if (borders) {
+            this.properties.setBorder(borders);
+        } else {
+            this.properties.setBorder({});
+        }
+
         if (width) {
             this.properties.setWidth(width.size, width.type);
         } else {
@@ -100,6 +105,10 @@ export class Table extends XmlComponent {
 
         if (layout) {
             this.properties.setLayout(layout);
+        }
+
+        if (alignment) {
+            this.properties.setAlignment(alignment);
         }
     }
 }

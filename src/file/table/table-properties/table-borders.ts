@@ -1,39 +1,95 @@
-import { BorderStyle } from "file/styles/border";
-import { IXmlableObject, XmlAttributeComponent, XmlComponent } from "file/xml-components";
+// http://officeopenxml.com/WPtableBorders.php
+import { BorderStyle } from "file/styles";
+import { XmlAttributeComponent, XmlComponent } from "file/xml-components";
+
+export interface ITableBordersOptions {
+    readonly top?: {
+        readonly style: BorderStyle;
+        readonly size: number;
+        readonly color: string;
+    };
+    readonly bottom?: {
+        readonly style: BorderStyle;
+        readonly size: number;
+        readonly color: string;
+    };
+    readonly left?: {
+        readonly style: BorderStyle;
+        readonly size: number;
+        readonly color: string;
+    };
+    readonly right?: {
+        readonly style: BorderStyle;
+        readonly size: number;
+        readonly color: string;
+    };
+    readonly insideHorizontal?: {
+        readonly style: BorderStyle;
+        readonly size: number;
+        readonly color: string;
+    };
+    readonly insideVertical?: {
+        readonly style: BorderStyle;
+        readonly size: number;
+        readonly color: string;
+    };
+}
 
 export class TableBorders extends XmlComponent {
-    constructor() {
+    constructor(options: ITableBordersOptions) {
         super("w:tblBorders");
-    }
 
-    public prepForXml(): IXmlableObject | undefined {
-        if (this.root.length > 0) {
-            return super.prepForXml();
+        if (options.top) {
+            this.root.push(new TableBordersElement("w:top", options.top.style, options.top.size, 0, options.top.color));
+        } else {
+            this.root.push(new TableBordersElement("w:top", BorderStyle.SINGLE, 4, 0, "auto"));
         }
-    }
 
-    public addTopBorder(style: BorderStyle, size: number, space: number, color: string): void {
-        this.root.push(new TableBordersElement("w:top", style, size, space, color));
-    }
+        if (options.left) {
+            this.root.push(new TableBordersElement("w:left", options.left.style, options.left.size, 0, options.left.color));
+        } else {
+            this.root.push(new TableBordersElement("w:left", BorderStyle.SINGLE, 4, 0, "auto"));
+        }
 
-    public addLeftBorder(style: BorderStyle, size: number, space: number, color: string): void {
-        this.root.push(new TableBordersElement("w:left", style, size, space, color));
-    }
+        if (options.bottom) {
+            this.root.push(new TableBordersElement("w:bottom", options.bottom.style, options.bottom.size, 0, options.bottom.color));
+        } else {
+            this.root.push(new TableBordersElement("w:bottom", BorderStyle.SINGLE, 4, 0, "auto"));
+        }
 
-    public addBottomBorder(style: BorderStyle, size: number, space: number, color: string): void {
-        this.root.push(new TableBordersElement("w:bottom", style, size, space, color));
-    }
+        if (options.right) {
+            this.root.push(new TableBordersElement("w:right", options.right.style, options.right.size, 0, options.right.color));
+        } else {
+            this.root.push(new TableBordersElement("w:right", BorderStyle.SINGLE, 4, 0, "auto"));
+        }
 
-    public addRightBorder(style: BorderStyle, size: number, space: number, color: string): void {
-        this.root.push(new TableBordersElement("w:right", style, size, space, color));
-    }
+        if (options.insideHorizontal) {
+            this.root.push(
+                new TableBordersElement(
+                    "w:insideH",
+                    options.insideHorizontal.style,
+                    options.insideHorizontal.size,
+                    0,
+                    options.insideHorizontal.color,
+                ),
+            );
+        } else {
+            this.root.push(new TableBordersElement("w:insideH", BorderStyle.SINGLE, 4, 0, "auto"));
+        }
 
-    public addInsideHBorder(style: BorderStyle, size: number, space: number, color: string): void {
-        this.root.push(new TableBordersElement("w:insideH", style, size, space, color));
-    }
-
-    public addInsideVBorder(style: BorderStyle, size: number, space: number, color: string): void {
-        this.root.push(new TableBordersElement("w:insideV", style, size, space, color));
+        if (options.insideVertical) {
+            this.root.push(
+                new TableBordersElement(
+                    "w:insideV",
+                    options.insideVertical.style,
+                    options.insideVertical.size,
+                    0,
+                    options.insideVertical.color,
+                ),
+            );
+        } else {
+            this.root.push(new TableBordersElement("w:insideV", BorderStyle.SINGLE, 4, 0, "auto"));
+        }
     }
 }
 

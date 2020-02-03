@@ -1,8 +1,7 @@
 import {
     Alignment,
-    AlignmentType,
+    ContextualSpacing,
     Indent,
-    ISpacingProperties,
     KeepLines,
     KeepNext,
     OutlineLevel,
@@ -10,12 +9,11 @@ import {
     Spacing,
     ThematicBreak,
 } from "file/paragraph";
-import { IIndentAttributesProperties, TabStop, TabStopType } from "file/paragraph/formatting";
+import { TabStop, TabStopType } from "file/paragraph/formatting";
 import * as formatting from "file/paragraph/run/formatting";
 import { RunProperties } from "file/paragraph/run/properties";
-import { UnderlineType } from "file/paragraph/run/underline";
-import { ShadingType } from "file/table";
 
+import { IParagraphStyleOptions2, IRunStyleOptions } from "../style-options";
 import { BasedOn, Link, Next, QuickFormat, SemiHidden, UiPriority, UnhideWhenUsed } from "./components";
 import { Style } from "./style";
 
@@ -27,41 +25,8 @@ export interface IBaseParagraphStyleOptions {
     readonly semiHidden?: boolean;
     readonly uiPriority?: number;
     readonly unhideWhenUsed?: boolean;
-    readonly run?: {
-        readonly size?: number;
-        readonly bold?: boolean;
-        readonly italics?: boolean;
-        readonly smallCaps?: boolean;
-        readonly allCaps?: boolean;
-        readonly strike?: boolean;
-        readonly doubleStrike?: boolean;
-        readonly subScript?: boolean;
-        readonly superScript?: boolean;
-        readonly underline?: {
-            readonly type?: UnderlineType;
-            readonly color?: string;
-        };
-        readonly color?: string;
-        readonly font?: string;
-        readonly characterSpacing?: number;
-        readonly highlight?: string;
-        readonly shadow?: {
-            readonly type: ShadingType;
-            readonly fill: string;
-            readonly color: string;
-        };
-    };
-    readonly paragraph?: {
-        readonly alignment?: AlignmentType;
-        readonly thematicBreak?: boolean;
-        readonly rightTabStop?: number;
-        readonly leftTabStop?: number;
-        readonly indent?: IIndentAttributesProperties;
-        readonly spacing?: ISpacingProperties;
-        readonly keepNext?: boolean;
-        readonly keepLines?: boolean;
-        readonly outlineLevel?: number;
-    };
+    readonly run?: IRunStyleOptions;
+    readonly paragraph?: IParagraphStyleOptions2;
 }
 
 export interface IParagraphStyleOptions extends IBaseParagraphStyleOptions {
@@ -177,6 +142,10 @@ export class ParagraphStyle extends Style {
 
             if (options.paragraph.thematicBreak) {
                 this.paragraphProperties.push(new ThematicBreak());
+            }
+
+            if (options.paragraph.contextualSpacing) {
+                this.paragraphProperties.push(new ContextualSpacing(options.paragraph.contextualSpacing));
             }
 
             if (options.paragraph.rightTabStop) {

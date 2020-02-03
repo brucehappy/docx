@@ -1,8 +1,10 @@
+// http://officeopenxml.com/WPtableProperties.php
 import { IgnoreIfEmptyXmlComponent } from "file/xml-components";
 
+import { Alignment, AlignmentType } from "../../paragraph";
 import { ITableShadingAttributesProperties, TableShading } from "../shading";
 import { WidthType } from "../table-cell";
-import { TableBorders } from "./table-borders";
+import { ITableBordersOptions, TableBorders } from "./table-borders";
 import { TableCellMargin } from "./table-cell-margin";
 import { ITableFloatOptions, TableFloatProperties } from "./table-float-properties";
 import { TableLayout, TableLayoutType } from "./table-layout";
@@ -10,15 +12,9 @@ import { PreferredTableWidth } from "./table-width";
 
 export class TableProperties extends IgnoreIfEmptyXmlComponent {
     private readonly cellMargin: TableCellMargin;
-    private readonly border: TableBorders;
 
     constructor() {
         super("w:tblPr");
-
-        // Borders must appear in the tblPr before cell margins
-        // in order for them to be applied properly in Word Online
-        this.border = new TableBorders();
-        this.root.push(this.border);
 
         this.cellMargin = new TableCellMargin();
         this.root.push(this.cellMargin);
@@ -33,8 +29,11 @@ export class TableProperties extends IgnoreIfEmptyXmlComponent {
         this.root.push(new TableLayout(type));
     }
 
-    public get Border(): TableBorders {
-        return this.border;
+    public setBorder(borderOptions: ITableBordersOptions): TableProperties {
+        // Borders must appear in the tblPr before cell margins
+        // in order for them to be applied properly in Word Online
+        this.root.unshift(new TableBorders(borderOptions));
+        return this;
     }
 
     public get CellMargin(): TableCellMargin {
@@ -50,5 +49,9 @@ export class TableProperties extends IgnoreIfEmptyXmlComponent {
         this.root.push(new TableShading(attrs));
 
         return this;
+    }
+
+    public setAlignment(type: AlignmentType): void {
+        this.root.push(new Alignment(type));
     }
 }

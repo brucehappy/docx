@@ -1,10 +1,12 @@
 import { assert, expect } from "chai";
+import * as shortid from "shortid";
+import { stub } from "sinon";
 
 import { Formatter } from "export/formatter";
 import { EMPTY_OBJECT } from "file/xml-components";
 
-import { Numbering } from "../numbering";
 import { AlignmentType, HeadingLevel, LeaderType, PageBreak, TabStopPosition, TabStopType } from "./formatting";
+import { Bookmark } from "./links";
 import { Paragraph } from "./paragraph";
 
 describe("Paragraph", () => {
@@ -596,14 +598,9 @@ describe("Paragraph", () => {
 
     describe("#setNumbering", () => {
         it("should add list paragraph style to JSON", () => {
-            const numbering = new Numbering();
-            const numberedAbstract = numbering.createAbstractNumbering();
-            numberedAbstract.createLevel(0, "lowerLetter", "%1)", "start");
-            const letterNumbering = numbering.createConcreteNumbering(numberedAbstract);
-
             const paragraph = new Paragraph({
                 numbering: {
-                    num: letterNumbering,
+                    reference: "test id",
                     level: 0,
                 },
             });
@@ -622,14 +619,9 @@ describe("Paragraph", () => {
         });
 
         it("it should add numbered properties", () => {
-            const numbering = new Numbering();
-            const numberedAbstract = numbering.createAbstractNumbering();
-            numberedAbstract.createLevel(0, "lowerLetter", "%1)", "start");
-            const letterNumbering = numbering.createConcreteNumbering(numberedAbstract);
-
             const paragraph = new Paragraph({
                 numbering: {
-                    num: letterNumbering,
+                    reference: "test id",
                     level: 0,
                 },
             });
@@ -640,15 +632,55 @@ describe("Paragraph", () => {
                         "w:pPr": [
                             { "w:pStyle": { _attr: { "w:val": "ListParagraph" } } },
                             {
-                                "w:numPr": [
-                                    { "w:ilvl": { _attr: { "w:val": 0 } } },
-                                    { "w:numId": { _attr: { "w:val": letterNumbering.id } } },
-                                ],
+                                "w:numPr": [{ "w:ilvl": { _attr: { "w:val": 0 } } }, { "w:numId": { _attr: { "w:val": "{test id}" } } }],
                             },
                         ],
                     },
                 ],
             });
+        });
+    });
+
+    it("it should add bookmark", () => {
+        stub(shortid, "generate").callsFake(() => {
+            return "test-unique-id";
+        });
+        const paragraph = new Paragraph({
+            children: [new Bookmark("test-id", "test")],
+        });
+        const tree = new Formatter().format(paragraph);
+        expect(tree).to.deep.equal({
+            "w:p": [
+                {
+                    "w:bookmarkStart": {
+                        _attr: {
+                            "w:id": "test-unique-id",
+                            "w:name": "test-id",
+                        },
+                    },
+                },
+                {
+                    "w:r": [
+                        {
+                            "w:t": [
+                                {
+                                    _attr: {
+                                        "xml:space": "preserve",
+                                    },
+                                },
+                                "test",
+                            ],
+                        },
+                    ],
+                },
+                {
+                    "w:bookmarkEnd": {
+                        _attr: {
+                            "w:id": "test-unique-id",
+                        },
+                    },
+                },
+            ],
         });
     });
 

@@ -3,10 +3,11 @@ import { Paragraph } from "file/paragraph";
 import { BorderStyle } from "file/styles";
 import { IXmlableObject, XmlComponent } from "file/xml-components";
 
+import { File } from "../../file";
 import { ITableShadingAttributesProperties } from "../shading";
 import { Table } from "../table";
 import { ITableCellMarginOptions } from "./cell-margin/table-cell-margins";
-import { VerticalAlign, VerticalMergeType } from "./table-cell-components";
+import { VerticalAlign, VerticalMergeType, WidthType } from "./table-cell-components";
 import { TableCellProperties } from "./table-cell-properties";
 
 export interface ITableCellOptions {
@@ -14,6 +15,10 @@ export interface ITableCellOptions {
     readonly margins?: ITableCellMarginOptions;
     readonly verticalAlign?: VerticalAlign;
     readonly verticalMerge?: VerticalMergeType;
+    readonly width?: {
+        readonly size: number | string;
+        readonly type?: WidthType;
+    };
     readonly columnSpan?: number;
     readonly rowSpan?: number;
     readonly borders?: {
@@ -78,6 +83,10 @@ export class TableCell extends XmlComponent {
             this.properties.addVerticalMerge(VerticalMergeType.RESTART);
         }
 
+        if (options.width) {
+            this.properties.setWidth(options.width.size, options.width.type);
+        }
+
         if (options.borders) {
             if (options.borders.top) {
                 this.properties.Borders.addTopBorder(options.borders.top.style, options.borders.top.size, options.borders.top.color);
@@ -102,11 +111,11 @@ export class TableCell extends XmlComponent {
         }
     }
 
-    public prepForXml(): IXmlableObject | undefined {
+    public prepForXml(file?: File): IXmlableObject | undefined {
         // Cells must end with a paragraph
         if (!(this.root[this.root.length - 1] instanceof Paragraph)) {
             this.root.push(new Paragraph({}));
         }
-        return super.prepForXml();
+        return super.prepForXml(file);
     }
 }
