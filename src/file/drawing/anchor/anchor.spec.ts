@@ -10,7 +10,7 @@ function createAnchor(drawingOptions: IDrawingOptions): Anchor {
     return new Anchor(
         {
             fileName: "test.png",
-            stream: new Buffer(""),
+            data: new Buffer(""),
             dimensions: {
                 pixels: {
                     x: 0,

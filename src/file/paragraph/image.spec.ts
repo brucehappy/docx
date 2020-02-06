@@ -13,7 +13,7 @@ describe("Image", () => {
 
     beforeEach(() => {
         image = new ImageParagraph({
-            stream: new Buffer(""),
+            data: new Buffer(""),
             fileName: "test.png",
             dimensions: {
                 pixels: {
