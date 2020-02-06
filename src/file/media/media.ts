@@ -9,7 +9,7 @@ import { IMediaData } from "./data";
 export class Media {
     public static addImage(
         file: File | HeaderWrapper | FooterWrapper,
-        buffer: Buffer | string | Uint8Array | ArrayBuffer,
+        data: Buffer | string | Uint8Array | ArrayBuffer,
         width?: number,
         height?: number,
         drawingOptions?: IDrawingOptions,
@@ -17,7 +17,21 @@ export class Media {
         description?: string,
     ): PictureRun {
         // Workaround to expose id without exposing to API
-        const mediaData = file.Media.addMedia(buffer, width, height, name, description);
+        const mediaData = file.Media.addMedia(data, width, height, name, description);
+        return new PictureRun(mediaData, drawingOptions);
+    }
+
+    public static addExternalImage(
+        file: File | HeaderWrapper | FooterWrapper,
+        externalUrl: string,
+        width?: number,
+        height?: number,
+        drawingOptions?: IDrawingOptions,
+        name?: string,
+        description?: string,
+    ): PictureRun {
+        // Workaround to expose id without exposing to API
+        const mediaData = file.Media.addExternalMedia(externalUrl, width, height, name, description);
         return new PictureRun(mediaData, drawingOptions);
     }
 
@@ -40,7 +54,27 @@ export class Media {
     }
 
     public addMedia(
-        buffer: Buffer | string | Uint8Array | ArrayBuffer,
+        data: Buffer | string | Uint8Array | ArrayBuffer,
+        width: number = 100,
+        height: number = 100,
+        name?: string,
+        description?: string,
+    ): IMediaData {
+        const newData = typeof data === "string" ? this.convertDataURIToBinary(data) : data;
+        return this.createMedia(
+            this.generateKey(name),
+            {
+                width: width,
+                height: height,
+            },
+            newData,
+            name,
+            description,
+        );
+    }
+
+    public addExternalMedia(
+        externalUrl: string,
         width: number = 100,
         height: number = 100,
         name?: string,
@@ -52,7 +86,7 @@ export class Media {
                 width: width,
                 height: height,
             },
-            buffer,
+            externalUrl,
             name,
             description,
         );
@@ -69,10 +103,8 @@ export class Media {
         name?: string,
         description?: string,
     ): IMediaData {
-        const newData = typeof data === "string" ? this.convertDataURIToBinary(data) : data;
-
         const imageData: IMediaData = {
-            stream: newData,
+            data: data,
             name: name,
             description: description,
             fileName: key,

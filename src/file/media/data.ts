@@ -10,7 +10,7 @@ export interface IMediaDataDimensions {
 }
 
 export interface IMediaData {
-    readonly stream: Buffer | Uint8Array | ArrayBuffer;
+    readonly data: Buffer | Uint8Array | ArrayBuffer | string;
     readonly name?: string;
     readonly description?: string;
     readonly fileName: string;

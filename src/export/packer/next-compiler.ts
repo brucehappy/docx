@@ -2,6 +2,7 @@ import * as JSZip from "jszip";
 import * as xml from "xml";
 
 import { File } from "file";
+import { TargetModeType } from "../../file/relationships/relationship/relationship";
 import { Formatter } from "../formatter";
 import { ImageReplacer } from "./image-replacer";
 import { NumberingReplacer } from "./numbering-replacer";
@@ -77,7 +78,10 @@ export class Compiler {
         }
 
         for (const data of file.Media.Array) {
-            const mediaData = data.stream;
+            const mediaData = data.data;
+            if (typeof mediaData === "string") {
+                continue;
+            }
             zip.file(`word/media/${data.fileName}`, mediaData, mediaZipOptions);
         }
 
@@ -92,17 +96,29 @@ export class Compiler {
         const documentXmlData = this.uniqueIdReplacer.replace(tempDocumentXmlData);
         const documentMediaDatas = this.imageReplacer.getMediaData(documentXmlData, file.Media);
 
+        const createImageRelationships = (mediaDatas, relationships, offset = 0) => {
+            mediaDatas.forEach((mediaData, i) => {
+                if (typeof mediaData.data === "string") {
+                    relationships.createRelationship(
+                        offset + i,
+                        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
+                        mediaData.data,
+                        TargetModeType.EXTERNAL,
+                    );
+                } else {
+                    relationships.createRelationship(
+                        offset + i,
+                        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
+                        `media/${mediaData.fileName}`,
+                    );
+                }
+            });
+        };
+
         return {
             Relationships: {
                 data: (() => {
-                    documentMediaDatas.forEach((mediaData, i) => {
-                        file.DocumentRelationships.createRelationship(
-                            documentRelationshipCount + i,
-                            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
-                            `media/${mediaData.fileName}`,
-                        );
-                    });
-
+                    createImageRelationships(documentMediaDatas, file.DocumentRelationships, documentRelationshipCount);
                     return xml(this.formatter.format(file.DocumentRelationships, file), prettify);
                 })(),
                 path: "word/_rels/document.xml.rels",
@@ -140,14 +156,7 @@ export class Compiler {
             HeaderRelationships: file.Headers.map((headerWrapper, index) => {
                 const xmlData = xml(this.formatter.format(headerWrapper.Header, file), prettify);
                 const mediaDatas = this.imageReplacer.getMediaData(xmlData, file.Media);
-
-                mediaDatas.forEach((mediaData, i) => {
-                    headerWrapper.Relationships.createRelationship(
-                        i,
-                        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
-                        `media/${mediaData.fileName}`,
-                    );
-                });
+                createImageRelationships(mediaDatas, headerWrapper.Relationships);
 
                 return {
                     data: xml(this.formatter.format(headerWrapper.Relationships, file), prettify),
@@ -157,14 +166,7 @@ export class Compiler {
             FooterRelationships: file.Footers.map((footerWrapper, index) => {
                 const xmlData = xml(this.formatter.format(footerWrapper.Footer, file), prettify);
                 const mediaDatas = this.imageReplacer.getMediaData(xmlData, file.Media);
-
-                mediaDatas.forEach((mediaData, i) => {
-                    footerWrapper.Relationships.createRelationship(
-                        i,
-                        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
-                        `media/${mediaData.fileName}`,
-                    );
-                });
+                createImageRelationships(mediaDatas, footerWrapper.Relationships);
 
                 return {
                     data: xml(this.formatter.format(footerWrapper.Relationships, file), prettify),

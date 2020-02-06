@@ -69,7 +69,7 @@ describe("Media", () => {
             ((process as any).atob as any) = () => "atob result";
 
             const image = new Media().addMedia("");
-            expect(image.stream).to.be.an.instanceof(Uint8Array);
+            expect(image.data).to.be.an.instanceof(Uint8Array);
         });
 
         it("should use data as is if its not a string", () => {
@@ -79,7 +79,7 @@ describe("Media", () => {
             (Media as any).generateId = () => "test";
 
             const image = new Media().addMedia(new Buffer(""));
-            expect(image.stream).to.be.an.instanceof(Uint8Array);
+            expect(image.data).to.be.an.instanceof(Uint8Array);
         });
     });
 
