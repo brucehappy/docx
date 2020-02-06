@@ -76,6 +76,9 @@ export class Run extends XmlComponent {
         this.properties = new RunProperties();
         this.root.push(this.properties);
 
+        // NOTE: Order of application is important for some docx viewers.  For
+        // example, if strike comes after size, it won't be applied by Word
+        // Online.
         if (options.bold) {
             this.properties.push(new Bold());
             this.properties.push(new BoldComplexScript());
@@ -86,8 +89,8 @@ export class Run extends XmlComponent {
             this.properties.push(new ItalicsComplexScript());
         }
 
-        if (options.underline) {
-            this.properties.push(new Underline(options.underline.type, options.underline.color));
+        if (options.strike) {
+            this.properties.push(new Strike());
         }
 
         if (options.color) {
@@ -97,6 +100,10 @@ export class Run extends XmlComponent {
         if (options.size) {
             this.properties.push(new Size(options.size));
             this.properties.push(new SizeComplexScript(options.size));
+        }
+
+        if (options.underline) {
+            this.properties.push(new Underline(options.underline.type, options.underline.color));
         }
 
         if (options.rightToLeft) {
@@ -109,10 +116,6 @@ export class Run extends XmlComponent {
 
         if (options.allCaps) {
             this.properties.push(new Caps());
-        }
-
-        if (options.strike) {
-            this.properties.push(new Strike());
         }
 
         if (options.doubleStrike) {
