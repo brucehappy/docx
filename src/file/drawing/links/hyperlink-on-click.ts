@@ -2,12 +2,12 @@ import { XmlComponent } from "file/xml-components";
 import { HyperlinkOnClickAttributes, IHyperlinkOnClickAttributesProperties } from "./hyperlink-on-click-attributes";
 
 export class HyperlinkOnClick extends XmlComponent {
-    public readonly linkId: number;
+    public readonly linkId: string;
 
-    constructor(relationshipsCount: number) {
+    constructor(relationshipId: string) {
         super("a:hlinkClick");
 
-        this.linkId = relationshipsCount + 1;
+        this.linkId = relationshipId;
 
         const props: IHyperlinkOnClickAttributesProperties = {
             id: `rId${this.linkId}`,

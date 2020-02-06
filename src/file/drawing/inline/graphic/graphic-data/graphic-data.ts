@@ -1,14 +1,14 @@
 import { IMediaData } from "file/media";
+import { HyperlinkRef } from "file/paragraph";
 import { XmlComponent } from "file/xml-components";
 
-import { HyperlinkOnClick } from "file/drawing/links";
 import { GraphicDataAttributes } from "./graphic-data-attribute";
 import { Pic } from "./pic";
 
 export class GraphicData extends XmlComponent {
     private readonly pic: Pic;
 
-    constructor(mediaData: IMediaData, x: number, y: number) {
+    constructor(mediaData: IMediaData, x: number, y: number, hyperlinkOnClick?: HyperlinkRef) {
         super("a:graphicData");
 
         this.root.push(
@@ -17,16 +17,12 @@ export class GraphicData extends XmlComponent {
             }),
         );
 
-        this.pic = new Pic(mediaData, x, y);
+        this.pic = new Pic(mediaData, x, y, hyperlinkOnClick);
 
         this.root.push(this.pic);
     }
 
     public setXY(x: number, y: number): void {
         this.pic.setXY(x, y);
-    }
-
-    public addHyperlinkOnClick(hyperlinkOnClick: HyperlinkOnClick): void {
-        this.pic.addHyperlinkOnClick(hyperlinkOnClick);
     }
 }

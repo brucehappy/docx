@@ -1,10 +1,11 @@
-import { HyperlinkOnClick } from "file/drawing/links";
+import { File } from "file";
 import { IMediaData } from "file/media";
-import { XmlComponent } from "file/xml-components";
+import { HyperlinkRef } from "file/paragraph";
+import { IXmlableObject, XmlComponent } from "file/xml-components";
 import { DocPropertiesAttributes } from "./doc-properties-attributes";
 
 export class DocProperties extends XmlComponent {
-    constructor(mediaData: IMediaData) {
+    constructor(mediaData: IMediaData, hyperlinkOnClick?: HyperlinkRef) {
         super("wp:docPr");
 
         this.root.push(
@@ -14,9 +15,21 @@ export class DocProperties extends XmlComponent {
                 descr: mediaData.description,
             }),
         );
+
+        if (hyperlinkOnClick) {
+            this.root.push(hyperlinkOnClick);
+        }
     }
 
-    public addHyperlinkOnClick(hyperlinkOnClick: HyperlinkOnClick): void {
-        this.root.push(hyperlinkOnClick);
+    public prepForXml(file?: File): IXmlableObject | undefined {
+        if (file) {
+            this.root.forEach((element, index) => {
+                if (element instanceof HyperlinkRef) {
+                    this.root[index] = file.HyperlinkCache[element.id];
+                }
+            });
+        }
+
+        return super.prepForXml(file);
     }
 }

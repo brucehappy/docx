@@ -2,10 +2,11 @@
 import { assert, expect } from "chai";
 
 import { Formatter } from "export/formatter";
+import { File } from "file";
+import { HyperlinkRef, HyperlinkType } from "file/paragraph";
 
 import { ImageParagraph } from "./image";
 
-import { HyperlinkOnClick } from "file/drawing/links";
 import { EMPTY_OBJECT } from "file/xml-components";
 
 describe("Image", () => {
@@ -224,9 +225,38 @@ describe("Image", () => {
     });
 
     describe("#hyperlinkOnClick()", () => {
+        beforeEach(() => {
+            image = new ImageParagraph(
+                {
+                    data: new Buffer(""),
+                    fileName: "test.png",
+                    dimensions: {
+                        pixels: {
+                            x: 10,
+                            y: 10,
+                        },
+                        emus: {
+                            x: 10,
+                            y: 10,
+                        },
+                    },
+                },
+                undefined,
+                new HyperlinkRef("superid"),
+            );
+        });
+
         it("should set the hyperlinkOnClick of the object properly", () => {
-            image.addHyperlinkOnClick(new HyperlinkOnClick(0));
-            const tree = new Formatter().format(image);
+            const file = new File({
+                hyperlinks: {
+                    superid: {
+                        type: HyperlinkType.EXTERNALCLICK,
+                        link: "https://example.com/",
+                    },
+                },
+            });
+            const id = file.HyperlinkCache.superid.linkId;
+            const tree = new Formatter().format(image, file);
             expect(tree).to.deep.equal({
                 "w:p": [
                     {
@@ -271,7 +301,7 @@ describe("Image", () => {
                                                     {
                                                         "a:hlinkClick": {
                                                             _attr: {
-                                                                "r:id": "rId1",
+                                                                "r:id": "rId" + id,
                                                                 "xmlns:a": "http://schemas.openxmlformats.org/drawingml/2006/main",
                                                             },
                                                         },
@@ -324,7 +354,7 @@ describe("Image", () => {
                                                                                     {
                                                                                         "a:hlinkClick": {
                                                                                             _attr: {
-                                                                                                "r:id": "rId1",
+                                                                                                "r:id": "rId" + id,
                                                                                                 "xmlns:a":
                                                                                                     "http://schemas.openxmlformats.org/drawingml/2006/main",
                                                                                             },
