@@ -85,11 +85,11 @@ describe("Hyperlink", () => {
                             "w:r": [
                                 {
                                     "w:rPr": [
+                                        { "w:rStyle": { _attr: { "w:val": "Hyperlink" } } },
                                         { "w:b": { _attr: { "w:val": true } } },
                                         { "w:bCs": { _attr: { "w:val": true } } },
                                         { "w:i": { _attr: { "w:val": true } } },
                                         { "w:iCs": { _attr: { "w:val": true } } },
-                                        { "w:rStyle": { _attr: { "w:val": "Hyperlink" } } },
                                     ],
                                 },
                                 { "w:t": [{ _attr: { "xml:space": "preserve" } }, "Example Link"] },
