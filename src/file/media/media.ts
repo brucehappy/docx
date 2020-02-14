@@ -36,11 +36,13 @@ export class Media {
     }
 
     private readonly map: Map<string, IMediaData>;
+    private readonly mapKeys: string[];
     // tslint:disable-next-line:readonly-keyword
     private count: number = 0;
 
     constructor() {
         this.map = new Map<string, IMediaData>();
+        this.mapKeys = [];
     }
 
     public getMedia(key: string): IMediaData {
@@ -120,16 +122,25 @@ export class Media {
             },
         };
 
+        const existingImageData = this.map.get(key);
         this.map.set(key, imageData);
+        if (!existingImageData) {
+            this.mapKeys.push(key);
+        }
 
         return imageData;
     }
 
     public get Array(): IMediaData[] {
+        // Cannot use a simple mapKeys.map() because of TS type inference
+        // thinking the result would be Array<IMediaData | undefined>
         const array = new Array<IMediaData>();
 
-        this.map.forEach((data) => {
-            array.push(data);
+        this.mapKeys.forEach((key) => {
+            const mediaData = this.map.get(key);
+            if (mediaData) {
+                array.push(mediaData);
+            }
         });
 
         return array;
