@@ -25,15 +25,15 @@ export class Styles extends XmlComponent {
             }
         }
 
-        if (options.paragraphStyles) {
-            for (const style of options.paragraphStyles) {
-                this.root.push(new ParagraphStyle(style));
-            }
-        }
-
         if (options.characterStyles) {
             for (const style of options.characterStyles) {
                 this.root.push(new CharacterStyle(style));
+            }
+        }
+
+        if (options.paragraphStyles) {
+            for (const style of options.paragraphStyles) {
+                this.root.push(new ParagraphStyle(style));
             }
         }
     }

@@ -128,7 +128,7 @@ export class Numbering extends XmlComponent {
             {
                 level: 7,
                 format: "bullet",
-                text: "\u25CF",
+                text: "\u25CB",
                 alignment: AlignmentType.LEFT,
                 style: {
                     paragraph: {
@@ -139,7 +139,7 @@ export class Numbering extends XmlComponent {
             {
                 level: 8,
                 format: "bullet",
-                text: "\u25CF",
+                text: "\u25A0",
                 alignment: AlignmentType.LEFT,
                 style: {
                     paragraph: {

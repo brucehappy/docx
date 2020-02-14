@@ -115,7 +115,6 @@ export class LevelBase extends XmlComponent {
         );
 
         this.root.push(new Start(start));
-        this.root.push(new LevelJc(alignment));
 
         if (format) {
             this.root.push(new NumberFormat(format));
@@ -124,6 +123,8 @@ export class LevelBase extends XmlComponent {
         if (text) {
             this.root.push(new LevelText(text));
         }
+
+        this.root.push(new LevelJc(alignment));
 
         this.paragraphProperties = new ParagraphProperties({});
         this.runProperties = new RunProperties();
