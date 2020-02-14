@@ -58,6 +58,47 @@ describe("Hyperlink", () => {
                 });
             });
         });
+
+        describe("with run options", () => {
+            beforeEach(() => {
+                hyperlink = new Hyperlink(
+                    {
+                        text: "Example Link",
+                        bold: true,
+                        italics: true,
+                    },
+                    "superid3",
+                );
+            });
+
+            it("should create a hyperlink with run options", () => {
+                const tree = new Formatter().format(hyperlink);
+                expect(tree).to.deep.equal({
+                    "w:hyperlink": [
+                        {
+                            _attr: {
+                                "w:history": 1,
+                                "r:id": "rIdsuperid3",
+                            },
+                        },
+                        {
+                            "w:r": [
+                                {
+                                    "w:rPr": [
+                                        { "w:b": { _attr: { "w:val": true } } },
+                                        { "w:bCs": { _attr: { "w:val": true } } },
+                                        { "w:i": { _attr: { "w:val": true } } },
+                                        { "w:iCs": { _attr: { "w:val": true } } },
+                                        { "w:rStyle": { _attr: { "w:val": "Hyperlink" } } },
+                                    ],
+                                },
+                                { "w:t": [{ _attr: { "xml:space": "preserve" } }, "Example Link"] },
+                            ],
+                        },
+                    ],
+                });
+            });
+        });
     });
 });
 

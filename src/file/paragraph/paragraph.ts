@@ -160,15 +160,16 @@ export class Paragraph extends XmlComponent {
         }
     }
 
-    public prepForXml(file: File): IXmlableObject | undefined {
-        for (const element of this.root) {
-            if (element instanceof HyperlinkRef) {
-                const index = this.root.indexOf(element);
-                this.root[index] = file.HyperlinkCache[element.id];
-            }
+    public prepForXml(file?: File): IXmlableObject | undefined {
+        if (file) {
+            this.root.forEach((element, index) => {
+                if (element instanceof HyperlinkRef) {
+                    this.root[index] = file.HyperlinkCache[element.id];
+                }
+            });
         }
 
-        return super.prepForXml();
+        return super.prepForXml(file);
     }
 
     public addRunToFront(run: Run): Paragraph {

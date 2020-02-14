@@ -1,11 +1,12 @@
 // http://officeopenxml.com/WPhyperlink.php
 import { XmlComponent } from "file/xml-components";
-import { TextRun } from "../run";
+import { IRunOptions, TextRun } from "../run";
 import { HyperlinkAttributes, IHyperlinkAttributesProperties } from "./hyperlink-attributes";
 
 export enum HyperlinkType {
     INTERNAL = "INTERNAL",
     EXTERNAL = "EXTERNAL",
+    EXTERNALCLICK = "EXTERNALCLICK",
 }
 
 export class HyperlinkRef {
@@ -16,7 +17,7 @@ export class Hyperlink extends XmlComponent {
     public readonly linkId: string;
     private readonly textRun: TextRun;
 
-    constructor(text: string, relationshipId: string, anchor?: string) {
+    constructor(runOptions: IRunOptions | string, relationshipId: string, anchor?: string) {
         super("w:hyperlink");
 
         this.linkId = relationshipId;
@@ -29,10 +30,17 @@ export class Hyperlink extends XmlComponent {
 
         const attributes = new HyperlinkAttributes(props);
         this.root.push(attributes);
-        this.textRun = new TextRun({
-            text: text,
-            style: "Hyperlink",
-        });
+        this.textRun = new TextRun(
+            typeof runOptions === "string"
+                ? {
+                      text: runOptions,
+                      style: "Hyperlink",
+                  }
+                : {
+                      ...runOptions,
+                      style: "Hyperlink",
+                  },
+        );
         this.root.push(this.textRun);
     }
 

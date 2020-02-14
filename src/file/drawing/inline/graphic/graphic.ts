@@ -1,7 +1,7 @@
 import { IMediaData } from "file/media";
+import { HyperlinkRef } from "file/paragraph";
 import { XmlAttributeComponent, XmlComponent } from "file/xml-components";
 
-import { HyperlinkOnClick } from "file/drawing/links";
 import { GraphicData } from "./graphic-data";
 
 interface IGraphicProperties {
@@ -17,7 +17,7 @@ class GraphicAttributes extends XmlAttributeComponent<IGraphicProperties> {
 export class Graphic extends XmlComponent {
     private readonly data: GraphicData;
 
-    constructor(mediaData: IMediaData, x: number, y: number) {
+    constructor(mediaData: IMediaData, x: number, y: number, hyperlinkOnClick?: HyperlinkRef) {
         super("a:graphic");
         this.root.push(
             new GraphicAttributes({
@@ -25,16 +25,12 @@ export class Graphic extends XmlComponent {
             }),
         );
 
-        this.data = new GraphicData(mediaData, x, y);
+        this.data = new GraphicData(mediaData, x, y, hyperlinkOnClick);
 
         this.root.push(this.data);
     }
 
     public setXY(x: number, y: number): void {
         this.data.setXY(x, y);
-    }
-
-    public addHyperlinkOnClick(hyperlinkOnClick: HyperlinkOnClick): void {
-        this.data.addHyperlinkOnClick(hyperlinkOnClick);
     }
 }

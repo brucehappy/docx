@@ -8,7 +8,7 @@ describe("HyperlinkOnClick", () => {
     let hyperlinkOnClick: HyperlinkOnClick;
 
     beforeEach(() => {
-        hyperlinkOnClick = new HyperlinkOnClick(0);
+        hyperlinkOnClick = new HyperlinkOnClick("superid");
     });
 
     describe("#constructor()", () => {
@@ -20,7 +20,7 @@ describe("HyperlinkOnClick", () => {
         it("should create a hyperlinkOnClick with right attributes", () => {
             const newJson = Utility.jsonify(hyperlinkOnClick);
             const attributes = {
-                id: "rId1",
+                id: "rIdsuperid",
                 xmlns: "http://schemas.openxmlformats.org/drawingml/2006/main",
             };
             assert.equal(JSON.stringify(newJson.root[0].root), JSON.stringify(attributes));

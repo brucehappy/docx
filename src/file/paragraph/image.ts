@@ -1,4 +1,4 @@
-import { HyperlinkOnClick } from "file/drawing/links";
+import { HyperlinkRef } from "file/paragraph";
 import { IDrawingOptions } from "../drawing";
 import { IMediaData } from "../media";
 import { Paragraph } from "./paragraph";
@@ -7,14 +7,10 @@ import { PictureRun } from "./run";
 export class ImageParagraph extends Paragraph {
     private readonly pictureRun: PictureRun;
 
-    constructor(imageData: IMediaData, drawingOptions?: IDrawingOptions) {
+    constructor(imageData: IMediaData, drawingOptions?: IDrawingOptions, hyperlinkOnClick?: HyperlinkRef) {
         super({});
-        this.pictureRun = new PictureRun(imageData, drawingOptions);
+        this.pictureRun = new PictureRun(imageData, drawingOptions, hyperlinkOnClick);
         this.root.push(this.pictureRun);
-    }
-
-    public addHyperlinkOnClick(hyperlinkOnClick: HyperlinkOnClick): void {
-        this.pictureRun.addHyperlinkOnClick(hyperlinkOnClick);
     }
 
     public scale(factorX: number, factorY?: number): void {

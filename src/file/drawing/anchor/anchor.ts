@@ -1,6 +1,6 @@
 // http://officeopenxml.com/drwPicFloating.php
-import { HyperlinkOnClick } from "file/drawing/links";
 import { IMediaData, IMediaDataDimensions } from "file/media";
+import { HyperlinkRef } from "file/paragraph";
 import { XmlComponent } from "file/xml-components";
 import { IDrawingOptions } from "../drawing";
 import { HorizontalPosition, IFloating, SimplePos, VerticalPosition } from "../floating";
@@ -22,14 +22,8 @@ const defaultOptions: IFloating = {
 };
 
 export class Anchor extends XmlComponent {
-    private readonly docProperties: DocProperties;
-    private readonly graphic: Graphic;
-
-    constructor(mediaData: IMediaData, dimensions: IMediaDataDimensions, drawingOptions: IDrawingOptions) {
+    constructor(mediaData: IMediaData, dimensions: IMediaDataDimensions, drawingOptions: IDrawingOptions, hyperlinkOnClick?: HyperlinkRef) {
         super("wp:anchor");
-
-        this.docProperties = new DocProperties(mediaData);
-        this.graphic = new Graphic(mediaData, dimensions.emus.x, dimensions.emus.y);
 
         const floating = {
             margins: {
@@ -82,13 +76,8 @@ export class Anchor extends XmlComponent {
             this.root.push(new WrapNone());
         }
 
-        this.root.push(this.docProperties);
+        this.root.push(new DocProperties(mediaData, hyperlinkOnClick));
         this.root.push(new GraphicFrameProperties());
-        this.root.push(this.graphic);
-    }
-
-    public addHyperlinkOnClick(hyperlinkOnClick: HyperlinkOnClick): void {
-        this.docProperties.addHyperlinkOnClick(hyperlinkOnClick);
-        this.graphic.addHyperlinkOnClick(hyperlinkOnClick);
+        this.root.push(new Graphic(mediaData, dimensions.emus.x, dimensions.emus.y, hyperlinkOnClick));
     }
 }

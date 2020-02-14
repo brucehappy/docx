@@ -18,7 +18,7 @@ import { Footer, Header } from "./header";
 import { HeaderWrapper, IDocumentHeader } from "./header-wrapper";
 import { Media } from "./media";
 import { Numbering } from "./numbering";
-import { Hyperlink, HyperlinkRef, HyperlinkType, Paragraph } from "./paragraph";
+import { Hyperlink, HyperlinkRef, HyperlinkType, IRunOptions, Paragraph } from "./paragraph";
 import { Relationships } from "./relationships";
 import { TargetModeType } from "./relationships/relationship/relationship";
 import { Settings } from "./settings";
@@ -122,6 +122,32 @@ export class File {
 
         this.addDefaultRelationships();
 
+        if (options.hyperlinks) {
+            const cache = {};
+
+            for (const key in options.hyperlinks) {
+                if (!options.hyperlinks[key]) {
+                    continue;
+                }
+
+                const hyperlinkRef = options.hyperlinks[key];
+
+                switch (hyperlinkRef.type) {
+                    case HyperlinkType.INTERNAL:
+                        cache[key] = this.createInternalHyperLink(key, hyperlinkRef.text || hyperlinkRef.textOptions);
+                        break;
+                    case HyperlinkType.EXTERNAL:
+                        cache[key] = this.createHyperlink(hyperlinkRef.link, hyperlinkRef.text || hyperlinkRef.textOptions);
+                        break;
+                    case HyperlinkType.EXTERNALCLICK:
+                        cache[key] = this.createHyperlinkOnClick(hyperlinkRef.link);
+                        break;
+                }
+            }
+
+            this.hyperlinkCache = cache;
+        }
+
         if (fileProperties.template && fileProperties.template.headers) {
             for (const templateHeader of fileProperties.template.headers) {
                 this.addHeaderToDocument(templateHeader.header, templateHeader.type);
@@ -152,27 +178,6 @@ export class File {
             for (const paragraph of options.footnotes) {
                 this.footNotes.createFootNote(paragraph);
             }
-        }
-
-        if (options.hyperlinks) {
-            const cache = {};
-
-            for (const key in options.hyperlinks) {
-                if (!options.hyperlinks[key]) {
-                    continue;
-                }
-
-                const hyperlinkRef = options.hyperlinks[key];
-
-                const hyperlink =
-                    hyperlinkRef.type === HyperlinkType.EXTERNAL
-                        ? this.createHyperlink(hyperlinkRef.link, hyperlinkRef.text)
-                        : this.createInternalHyperLink(key, hyperlinkRef.text);
-
-                cache[key] = hyperlink;
-            }
-
-            this.hyperlinkCache = cache;
         }
     }
 
@@ -217,8 +222,8 @@ export class File {
         }
     }
 
-    public createHyperlinkOnClick(link: string): HyperlinkOnClick {
-        const hyperlinkOnClick = new HyperlinkOnClick(this.docRelationships.RelationshipCount);
+    private createHyperlinkOnClick(link: string): HyperlinkOnClick {
+        const hyperlinkOnClick = new HyperlinkOnClick(shortid.generate().toLowerCase());
         this.docRelationships.createRelationship(
             hyperlinkOnClick.linkId,
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink",
@@ -228,8 +233,8 @@ export class File {
         return hyperlinkOnClick;
     }
 
-    private createHyperlink(link: string, text: string = link): Hyperlink {
-        const hyperlink = new Hyperlink(text, shortid.generate().toLowerCase());
+    private createHyperlink(link: string, runOptions: IRunOptions | string = link): Hyperlink {
+        const hyperlink = new Hyperlink(runOptions, shortid.generate().toLowerCase());
         this.docRelationships.createRelationship(
             hyperlink.linkId,
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink",
@@ -239,8 +244,8 @@ export class File {
         return hyperlink;
     }
 
-    private createInternalHyperLink(anchor: string, text: string = anchor): Hyperlink {
-        const hyperlink = new Hyperlink(text, shortid.generate().toLowerCase(), anchor);
+    private createInternalHyperLink(anchor: string, runOptions: IRunOptions | string = anchor): Hyperlink {
+        const hyperlink = new Hyperlink(runOptions, shortid.generate().toLowerCase(), anchor);
         // NOTE: unlike File#createHyperlink(), since the link is to an internal bookmark
         // we don't need to create a new relationship.
         return hyperlink;
