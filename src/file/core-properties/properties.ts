@@ -7,12 +7,14 @@ import { IStylesOptions } from "../styles";
 import { Created, Creator, Description, Keywords, LastModifiedBy, Modified, Revision, Subject, Title } from "./components";
 
 export interface IInternalHyperlinkDefinition {
+    readonly key: string;
     readonly text?: string;
     readonly textOptions?: IRunOptions;
     readonly type: HyperlinkType.INTERNAL;
 }
 
 export interface IExternalHyperlinkDefinition {
+    readonly key: string;
     readonly link: string;
     readonly text?: string;
     readonly textOptions?: IRunOptions;
@@ -20,6 +22,7 @@ export interface IExternalHyperlinkDefinition {
 }
 
 export interface IExternalHyperlinkOnClickDefinition {
+    readonly key: string;
     readonly link: string;
     readonly type: HyperlinkType.EXTERNALCLICK;
 }
@@ -38,9 +41,7 @@ export interface IPropertiesOptions {
     readonly styles?: IStylesOptions;
     readonly numbering?: INumberingOptions;
     readonly footnotes?: Paragraph[];
-    readonly hyperlinks?: {
-        readonly [key: string]: IInternalHyperlinkDefinition | IExternalHyperlinkDefinition | IExternalHyperlinkOnClickDefinition;
-    };
+    readonly hyperlinks?: Array<IInternalHyperlinkDefinition | IExternalHyperlinkDefinition | IExternalHyperlinkOnClickDefinition>;
 }
 
 export class CoreProperties extends XmlComponent {

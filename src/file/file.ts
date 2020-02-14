@@ -125,13 +125,8 @@ export class File {
         if (options.hyperlinks) {
             const cache = {};
 
-            for (const key in options.hyperlinks) {
-                if (!options.hyperlinks[key]) {
-                    continue;
-                }
-
-                const hyperlinkRef = options.hyperlinks[key];
-
+            for (const hyperlinkRef of options.hyperlinks) {
+                const key = hyperlinkRef.key;
                 switch (hyperlinkRef.type) {
                     case HyperlinkType.INTERNAL:
                         cache[key] = this.createInternalHyperLink(key, hyperlinkRef.text || hyperlinkRef.textOptions);
@@ -223,9 +218,10 @@ export class File {
     }
 
     private createHyperlinkOnClick(link: string): HyperlinkOnClick {
-        const hyperlinkOnClick = new HyperlinkOnClick(shortid.generate().toLowerCase());
+        const relationshipId = this.currentRelationshipId++;
+        const hyperlinkOnClick = new HyperlinkOnClick(String(relationshipId));
         this.docRelationships.createRelationship(
-            hyperlinkOnClick.linkId,
+            relationshipId,
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink",
             link,
             TargetModeType.EXTERNAL,
@@ -234,9 +230,10 @@ export class File {
     }
 
     private createHyperlink(link: string, runOptions: IRunOptions | string = link): Hyperlink {
-        const hyperlink = new Hyperlink(runOptions, shortid.generate().toLowerCase());
+        const relationshipId = this.currentRelationshipId++;
+        const hyperlink = new Hyperlink(runOptions, String(relationshipId));
         this.docRelationships.createRelationship(
-            hyperlink.linkId,
+            relationshipId,
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink",
             link,
             TargetModeType.EXTERNAL,

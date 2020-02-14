@@ -626,12 +626,13 @@ describe("Drawing", () => {
         it("should create a drawing with inline element with hyperlink on click", () => {
             currentBreak = createDrawing(undefined, new HyperlinkRef("superid"));
             const file = new File({
-                hyperlinks: {
-                    superid: {
+                hyperlinks: [
+                    {
+                        key: "superid",
                         type: HyperlinkType.EXTERNALCLICK,
                         link: "https://example.com/",
                     },
-                },
+                ],
             });
             const id = file.HyperlinkCache.superid.linkId;
             const tree = new Formatter().format(currentBreak, file);
@@ -841,12 +842,13 @@ describe("Drawing", () => {
                 new HyperlinkRef("superid"),
             );
             const file = new File({
-                hyperlinks: {
-                    superid: {
+                hyperlinks: [
+                    {
+                        key: "superid",
                         type: HyperlinkType.EXTERNALCLICK,
                         link: "https://example.com/",
                     },
-                },
+                ],
             });
             const id = file.HyperlinkCache.superid.linkId;
             const tree = new Formatter().format(currentBreak, file);

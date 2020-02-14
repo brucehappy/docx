@@ -248,12 +248,13 @@ describe("Image", () => {
 
         it("should set the hyperlinkOnClick of the object properly", () => {
             const file = new File({
-                hyperlinks: {
-                    superid: {
+                hyperlinks: [
+                    {
+                        key: "superid",
                         type: HyperlinkType.EXTERNALCLICK,
                         link: "https://example.com/",
                     },
-                },
+                ],
             });
             const id = file.HyperlinkCache.superid.linkId;
             const tree = new Formatter().format(image, file);
