@@ -2,7 +2,7 @@ import { IDrawingOptions } from "../drawing";
 import { File } from "../file";
 import { FooterWrapper } from "../footer-wrapper";
 import { HeaderWrapper } from "../header-wrapper";
-import { PictureRun } from "../paragraph";
+import { HyperlinkRef, IRunOptions, PictureRun } from "../paragraph";
 import { IMediaData } from "./data";
 // import { Image } from "./image";
 
@@ -15,10 +15,12 @@ export class Media {
         drawingOptions?: IDrawingOptions,
         name?: string,
         description?: string,
+        hyperlinkOnClick?: HyperlinkRef,
+        runOptions?: IRunOptions,
     ): PictureRun {
         // Workaround to expose id without exposing to API
         const mediaData = file.Media.addMedia(data, width, height, name, description);
-        return new PictureRun(mediaData, drawingOptions);
+        return new PictureRun(mediaData, drawingOptions, hyperlinkOnClick, runOptions);
     }
 
     public static addExternalImage(
@@ -29,10 +31,12 @@ export class Media {
         drawingOptions?: IDrawingOptions,
         name?: string,
         description?: string,
+        hyperlinkOnClick?: HyperlinkRef,
+        runOptions?: IRunOptions,
     ): PictureRun {
         // Workaround to expose id without exposing to API
         const mediaData = file.Media.addExternalMedia(externalUrl, width, height, name, description);
-        return new PictureRun(mediaData, drawingOptions);
+        return new PictureRun(mediaData, drawingOptions, hyperlinkOnClick, runOptions);
     }
 
     private readonly map: Map<string, IMediaData>;

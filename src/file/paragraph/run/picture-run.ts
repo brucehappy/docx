@@ -2,13 +2,13 @@ import { HyperlinkRef } from "file/paragraph";
 import { Drawing } from "../../drawing";
 import { IDrawingOptions } from "../../drawing/drawing";
 import { IMediaData } from "../../media/data";
-import { Run } from "../run";
+import { IRunOptions, Run } from "../run";
 
 export class PictureRun extends Run {
     private readonly drawing: Drawing;
 
-    constructor(imageData: IMediaData, drawingOptions?: IDrawingOptions, hyperlinkOnClick?: HyperlinkRef) {
-        super({});
+    constructor(imageData: IMediaData, drawingOptions?: IDrawingOptions, hyperlinkOnClick?: HyperlinkRef, runOptions?: IRunOptions) {
+        super(runOptions || {});
 
         this.drawing = new Drawing(imageData, drawingOptions, hyperlinkOnClick);
 
