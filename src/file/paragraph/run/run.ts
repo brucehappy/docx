@@ -79,6 +79,10 @@ export class Run extends XmlComponent {
         // NOTE: Order of application is important for some docx viewers.  For
         // example, if strike comes after size, it won't be applied by Word
         // Online.
+        if (options.style) {
+            this.properties.push(new Style(options.style));
+        }
+
         if (options.bold) {
             this.properties.push(new Bold());
             this.properties.push(new BoldComplexScript());
@@ -128,10 +132,6 @@ export class Run extends XmlComponent {
 
         if (options.superScript) {
             this.properties.push(new SuperScript());
-        }
-
-        if (options.style) {
-            this.properties.push(new Style(options.style));
         }
 
         if (options.font) {
